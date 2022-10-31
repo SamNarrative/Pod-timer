@@ -1,8 +1,8 @@
-import "./styles.css";
-import React from "react";
-import { useEffect, useState } from "react";
-import moment from "moment";
-import "moment-timezone";
+import './styles.css';
+import React from 'react';
+import { useEffect, useState } from 'react';
+import moment from 'moment';
+import 'moment-timezone';
 
 moment().format();
 
@@ -21,7 +21,7 @@ function ClockWrapper() {
   const [sessionLengthTime, setSessionLengthTime] = useState(time);
   const [breakLengthTime, setBreakLengthTime] = useState(300);
   const [session, setSession] = useState(true);
-  const [beep, setBeep] = useState("");
+  const [beep, setBeep] = useState('');
   const [finishEpoc, setFinishEpoc] = useState();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ function ClockWrapper() {
     const newTime = time;
     const minutes = Math.floor(newTime / 60);
     const seconds = newTime - minutes * 60;
-    return seconds < 10 ? minutes + ":0" + seconds : minutes + ":" + seconds;
+    return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
   }
 
   function handleTimerClick() {
@@ -54,7 +54,7 @@ function ClockWrapper() {
   }
 
   function handleLengthChange(increase, type) {
-    if (type === "session") {
+    if (type === 'session') {
       if (sessionLengthTime <= 60 && !increase) {
         return;
       }
@@ -88,7 +88,7 @@ function ClockWrapper() {
   }
 
   useEffect(() => {
-    setBeep(document.getElementById("beep"));
+    setBeep(document.getElementById('beep'));
   }, []);
 
   if (time === 0) {
@@ -143,26 +143,26 @@ function Session({
   handleResetClick,
   timerActive,
   session,
-  finishEpoc
+  finishEpoc,
 }) {
   return (
     <div id="session">
       <div id="titleText">
         <p className="sessionTitle" id="title">
-          {session ? "session" : "break"}
+          {session ? 'session' : 'break'}
         </p>
         <p className="sessionTitle" id="finishingAt">
           {finishEpoc && timerActive
-            ? "finishing at: " +
+            ? 'finishing at: ' +
               moment
                 .unix(Math.round(finishEpoc / 1000))
-                .tz("Pacific/Auckland")
-                .format("h:mm:ssa")
-            : ""}
+                .tz('Pacific/Auckland')
+                .format('h:mma')
+            : ''}
         </p>
       </div>
-      <SessionTimer
-        formattedTime={formattedTime}
+      <SessionTimer formattedTime={formattedTime} />
+      <SessionButtons
         handleTimerClick={handleTimerClick}
         handleResetClick={handleResetClick}
         timerActive={timerActive}
@@ -171,41 +171,66 @@ function Session({
   );
 }
 
-function SessionTimer({
-  formattedTime,
-  handleTimerClick,
-  handleResetClick,
-  timerActive
-}) {
+function SessionTimer({ formattedTime }) {
   return (
     <div id="sessionTimerText">
       <p>{formattedTime}</p>
-      <div id="sessionTimerButtons">
-        <svg
-          onClick={() => handleTimerClick()}
-          className="timerButton"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="-2 -2 24 24"
-          width="24"
-          fill="currentColor"
-        >
-          {timerActive ? (
-            <path d="M2 0h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 2v14h2V2H2zm10-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 2v14h2V2h-2z"></path>
-          ) : (
-            <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm4.126-6.254l-4.055 2.898c-.905.646-2.13.389-2.737-.576A2.201 2.201 0 0 1 7 12.898V7.102C7 5.942 7.883 5 8.972 5c.391 0 .774.124 1.099.356l4.055 2.898c.905.647 1.146 1.952.54 2.917a2.042 2.042 0 0 1-.54.575zM8.972 7.102v5.796L13.027 10 8.972 7.102z"></path>
-          )}
-        </svg>
-        <svg
-          onClick={() => handleResetClick()}
-          className="timerButton"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="-1.5 -2.5 24 24"
-          width="24"
-          fill="currentColor"
-        >
-          <path d="M17.83 4.194l.42-1.377a1 1 0 1 1 1.913.585l-1.17 3.825a1 1 0 0 1-1.248.664l-3.825-1.17a1 1 0 1 1 .585-1.912l1.672.511A7.381 7.381 0 0 0 3.185 6.584l-.26.633a1 1 0 1 1-1.85-.758l.26-.633A9.381 9.381 0 0 1 17.83 4.194zM2.308 14.807l-.327 1.311a1 1 0 1 1-1.94-.484l.967-3.88a1 1 0 0 1 1.265-.716l3.828.954a1 1 0 0 1-.484 1.941l-1.786-.445a7.384 7.384 0 0 0 13.216-1.792 1 1 0 1 1 1.906.608 9.381 9.381 0 0 1-5.38 5.831 9.386 9.386 0 0 1-11.265-3.328z"></path>
-        </svg>
-      </div>
+    </div>
+  );
+}
+
+function SessionButtons({ handleTimerClick, handleResetClick, timerActive }) {
+  return (
+    <div id="sessionTimerButtons">
+      <svg
+        onClick={() => handleResetClick()}
+        className="timerButton"
+        xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor"
+      >
+        <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-10a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm0-1a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path>
+      </svg>
+      <svg
+        onClick={() => handleResetClick()}
+        className="timerButton"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-1.5 -2.5 24 24"
+        width="24"
+        fill="currentColor"
+      >
+        <path d="M17.83 4.194l.42-1.377a1 1 0 1 1 1.913.585l-1.17 3.825a1 1 0 0 1-1.248.664l-3.825-1.17a1 1 0 1 1 .585-1.912l1.672.511A7.381 7.381 0 0 0 3.185 6.584l-.26.633a1 1 0 1 1-1.85-.758l.26-.633A9.381 9.381 0 0 1 17.83 4.194zM2.308 14.807l-.327 1.311a1 1 0 1 1-1.94-.484l.967-3.88a1 1 0 0 1 1.265-.716l3.828.954a1 1 0 0 1-.484 1.941l-1.786-.445a7.384 7.384 0 0 0 13.216-1.792 1 1 0 1 1 1.906.608 9.381 9.381 0 0 1-5.38 5.831 9.386 9.386 0 0 1-11.265-3.328z"></path>
+      </svg>
+   
+        {timerActive ? (
+             <svg
+             onClick={() => handleTimerClick()}
+             className="timerButton"
+             xmlns="http://www.w3.org/2000/svg"
+         viewBox="-4 -3 24 24"
+             width="24"
+             fill="currentColor"
+           >
+          <path d="M2 0h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 2v14h2V2H2zm10-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 2v14h2V2h-2z"></path>
+          </svg>) : (
+             <svg
+             onClick={() => handleTimerClick()}
+             className="timerButton"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="-2 -2 24 24"
+             width="24"
+             fill="currentColor"
+           >
+          <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm4.126-6.254l-4.055 2.898c-.905.646-2.13.389-2.737-.576A2.201 2.201 0 0 1 7 12.898V7.102C7 5.942 7.883 5 8.972 5c.391 0 .774.124 1.099.356l4.055 2.898c.905.647 1.146 1.952.54 2.917a2.042 2.042 0 0 1-.54.575zM8.972 7.102v5.796L13.027 10 8.972 7.102z"></path>
+          </svg>)}
+
+      <svg
+        onClick={() => handleResetClick()}
+        className="timerButton"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="-2 -2 24 24" width="24" 
+        fill="currentColor"
+      >
+        <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm1.586-7H6a1 1 0 0 1 0-2h5.586L9.05 6.464a1 1 0 1 1 1.414-1.414l4.243 4.243a.997.997 0 0 1 0 1.414l-4.243 4.243a1 1 0 1 1-1.414-1.414L11.586 11z"></path>
+      </svg>
     </div>
   );
 }
@@ -215,7 +240,7 @@ function Control({ title, time, handleLengthChange, type }) {
     const newTime = time;
     const minutes = Math.floor(newTime / 60);
     const seconds = newTime - minutes * 60;
-    return seconds < 10 ? minutes + ":0" + seconds : minutes + ":" + seconds;
+    return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
   }
 
   return (

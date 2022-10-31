@@ -45,7 +45,7 @@
 
 #session {
   width: 300px;
-  height: 150px;
+  height: 140px;
   border-radius: 48px;
   padding: 10px 6px;
   box-shadow: rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
@@ -63,14 +63,13 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  grid-template-columns: 2fr 1fr;
 }
 
 #sessionTimerText p {
   font-size: 80px;
   font-weight: normal;
   text-align: center;
-  margin: 10px;
+  margin: 0px 20px;
 }
 
 #lengthControls {
@@ -93,14 +92,21 @@
 
 #sessionTimerButtons {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   justify-items: center;
-  z-index: 1;
+  align-items: center;
+  margin: 30px; 
 }
 
 .timerButton {
   transform: scale(1.5);
   margin: 10px;
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 30px -20px,
+  rgba(10, 37, 64, 0.15) 0px -2px 6px 0px inset;
+
 }
 
 .control {
@@ -147,8 +153,6 @@
 
 #finishingAt {
   text-align: right;
-  width: 180px;
-
 }
 
 @keyframes cycle-hue {

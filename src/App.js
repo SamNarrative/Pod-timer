@@ -49,7 +49,7 @@ function ClockWrapper() {
   }
 
   function handleResetClick() {
-    setTime(sessionLengthTime);
+    session ? setTime(sessionLengthTime) : setTime(breakLengthTime);
     setTimerActive(false);
   }
 

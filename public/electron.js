@@ -1,22 +1,21 @@
 const path = require('path');
-
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 400,
-    height: 400,
-    transparent:true,
-    frame: false, 
+    width: 350,
+    height: 220,
+    transparent: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
-    }
+    },
   });
 
-  win.setAlwaysOnTop(true, "screen-saver")     // - 2 -
-  win.setVisibleOnAllWorkspaces(true)   
+  win.setAlwaysOnTop(true, 'screen-saver'); // - 2 -
+  win.setVisibleOnAllWorkspaces(true);
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
@@ -25,8 +24,6 @@ function createWindow() {
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
-  
-  
 }
 
 // This method will be called when Electron has finished
@@ -46,6 +43,13 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
-    
+  }
+});
+
+const { ipcMain } = require('electron');
+ipcMain.on('resize-me', (event, arg) => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (win) {
+    win.setSize(arg[0], arg[1]);
   }
 });

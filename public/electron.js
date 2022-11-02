@@ -11,12 +11,13 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
+      webSecurity: false
     },
   });
 
-  win.setAlwaysOnTop(true, 'screen-saver'); // - 2 -
+  win.setAlwaysOnTop(true, 'screen-saver');
   win.setVisibleOnAllWorkspaces(true);
-
+  win.setHasShadow(false);
   // and load the index.html of the app.
   // win.loadFile("index.html");
   win.loadURL(

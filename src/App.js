@@ -104,7 +104,10 @@ function ClockWrapper() {
       ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
       : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
 
-    beep.play();
+      const player = new Audio('~/Users/samroberts/Code/Untitled/Pod timer/Pod-timer/src/audio.wav');
+      console.log()
+      // player.play()
+      beep.play();
   }
 
   return (
@@ -121,6 +124,7 @@ function ClockWrapper() {
         timerActive={timerActive}
         session={session}
         finishEpoc={finishEpoc}
+        time={time}
       />
       <SessionButtons
         handleTimerClick={handleTimerClick}
@@ -144,20 +148,19 @@ function ClockWrapper() {
           handleLengthChange={handleLengthChange}
           type="break"
         /> */}
-
-      <audio
+            <audio
         preload="auto"
         id="beep"
-        src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+        src="file:///Users/samroberts/Code/Untitled/Pod timer/Pod-timer/src/audio.wav"
       ></audio>
       {/* </div> */}
     </div>
   );
 }
 
-function Session({ formattedTime, timerActive, session, finishEpoc }) {
+function Session({ formattedTime, timerActive, session, finishEpoc, time }) {
   return (
-    <div id="session">
+    <div id="session" className={time > 5 ? 'default' : 'finishing'}>
       <div id="titleText">
         <p className="sessionTitle" id="title">
           {session ? 'session' : 'break'}

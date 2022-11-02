@@ -3,6 +3,7 @@ import React from 'react';
 import { useEffect, useState, useRef } from 'react';
 import moment from 'moment';
 import 'moment-timezone';
+import testSavePeriods from './cookiesdb';
 
 const { ipcRenderer } = window.require('electron');
 moment().format();
@@ -53,6 +54,7 @@ function ClockWrapper() {
   function handleResetClick() {
     session ? setTime(sessionLengthTime) : setTime(breakLengthTime);
     setTimerActive(false);
+    testSavePeriods();
   }
 
   function handleMinimse() {
@@ -194,9 +196,8 @@ function Session({
           </div>
         ) : finishEpoc && timerActive ? (
           <p className="sessionTitle" id="finishingAt">
-            {
-            'finishing at: ' + moment .unix(Math.round(finishEpoc / 1000))
-            .tz('Pacific/Auckland') .format('h:mma')}
+            {'finishing at: ' + moment.unix(Math.round(finishEpoc / 1000))
+            .tz('Pacific/Auckland').format('h:mma')}
           </p>
         ) : (
           ''

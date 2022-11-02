@@ -103,10 +103,7 @@ function ClockWrapper() {
     session
       ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
       : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
-
-      const player = new Audio('~/Users/samroberts/Code/Untitled/Pod timer/Pod-timer/src/audio.wav');
-      console.log()
-      // player.play()
+     
       beep.play();
   }
 

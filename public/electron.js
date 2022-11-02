@@ -1,6 +1,7 @@
 const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
+const { ipcMain } = require('electron');
 
 function createWindow() {
   // Create the browser window.
@@ -11,7 +12,7 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false
+      webSecurity: false,
     },
   });
 
@@ -47,7 +48,13 @@ app.on('activate', () => {
   }
 });
 
-const { ipcMain } = require('electron');
+ipcMain.on('minimize', () => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (win) {
+    win.minimize();
+  }
+});
+
 ipcMain.on('resize-me', (event, arg) => {
   const win = BrowserWindow.getFocusedWindow();
   if (win) {

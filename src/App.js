@@ -38,10 +38,6 @@ function ClockWrapper() {
     };
   });
 
-  function handleMouseEnterLeave() {
-    setMouseEntered(!mouseEntered);
-  }
-
   function formatTime(time) {
     const newTime = time;
     const minutes = Math.floor(newTime / 60);
@@ -57,6 +53,10 @@ function ClockWrapper() {
   function handleResetClick() {
     session ? setTime(sessionLengthTime) : setTime(breakLengthTime);
     setTimerActive(false);
+  }
+
+  function handleMinimse() {
+    ipcRenderer.send('minimize');
   }
 
   function handleLengthChange(increase, type) {
@@ -93,6 +93,14 @@ function ClockWrapper() {
     }
   }
 
+  function handleSkipToNext() {
+    setSession(!session);
+    session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
+    session
+      ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
+      : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+  }
+
   useEffect(() => {
     setBeep(document.getElementById('beep'));
   }, []);
@@ -103,15 +111,15 @@ function ClockWrapper() {
     session
       ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
       : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
-     
-      beep.play();
+
+    beep.play();
   }
 
   return (
     <div
       id="clockWrapper"
-      onMouseEnter={() => handleMouseEnterLeave()}
-      onMouseLeave={() => handleMouseEnterLeave()}
+      onMouseEnter={() => setMouseEntered(true)}
+      onMouseLeave={() => setMouseEntered(false)}
       ref={clockWarpperRef}
     >
       <Session
@@ -122,10 +130,13 @@ function ClockWrapper() {
         session={session}
         finishEpoc={finishEpoc}
         time={time}
+        mouseEntered={mouseEntered}
+        handleMinimse={handleMinimse}
       />
       <SessionButtons
         handleTimerClick={handleTimerClick}
         handleResetClick={handleResetClick}
+        handleSkipToNext={handleSkipToNext}
         timerActive={timerActive}
         mouseEntered={mouseEntered}
       />
@@ -145,7 +156,7 @@ function ClockWrapper() {
           handleLengthChange={handleLengthChange}
           type="break"
         /> */}
-            <audio
+      <audio
         preload="auto"
         id="beep"
         src="file:///Users/samroberts/Code/Untitled/Pod timer/Pod-timer/src/audio.wav"
@@ -155,22 +166,41 @@ function ClockWrapper() {
   );
 }
 
-function Session({ formattedTime, timerActive, session, finishEpoc, time }) {
+function Session({
+  formattedTime,
+  timerActive,
+  session,
+  finishEpoc,
+  time,
+  mouseEntered,
+  handleMinimse,
+}) {
   return (
     <div id="session" className={time > 5 ? 'default' : 'finishing'}>
       <div id="titleText">
         <p className="sessionTitle" id="title">
           {session ? 'session' : 'break'}
         </p>
-        <p className="sessionTitle" id="finishingAt">
-          {finishEpoc && timerActive
-            ? 'finishing at: ' +
-              moment
-                .unix(Math.round(finishEpoc / 1000))
-                .tz('Pacific/Auckland')
-                .format('h:mma')
-            : ''}
-        </p>
+        {mouseEntered ? (
+          <div id="minimise" onClick={() => handleMinimse()}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="-5 -11 24 24"
+              width="24"
+              fill="currentColor"
+            >
+              <path d="M1 0h12a1 1 0 0 1 0 2H1a1 1 0 1 1 0-2z"></path>
+            </svg>
+          </div>
+        ) : finishEpoc && timerActive ? (
+          <p className="sessionTitle" id="finishingAt">
+            {' '}
+            'finishing at: ' + moment .unix(Math.round(finishEpoc / 1000))
+            .tz('Pacific/Auckland') .format('h:mma')
+          </p>
+        ) : (
+          ''
+        )}
       </div>
       <SessionTimer formattedTime={formattedTime} />
     </div>
@@ -190,6 +220,7 @@ function SessionButtons({
   handleResetClick,
   timerActive,
   mouseEntered,
+  handleSkipToNext,
 }) {
   return (
     <div id="sessionTimerButtons" className={mouseEntered ? 'show' : 'hide'}>
@@ -239,7 +270,7 @@ function SessionButtons({
       )}
 
       <svg
-        onClick={() => handleResetClick()}
+        onClick={() => handleSkipToNext()}
         className="timerButton"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="-2 -2 24 24"

@@ -45,6 +45,12 @@
   -webkit-app-region: drag;
 }
 
+#minimise {
+  text-align: right;
+  margin-right: 30px;
+  margin-top: 5px;
+}
+
 #session.default{
   color: #2c2c2c;
   background-color: hsla(0, 0%, 100%, 0.9);

@@ -194,9 +194,9 @@ function Session({
           </div>
         ) : finishEpoc && timerActive ? (
           <p className="sessionTitle" id="finishingAt">
-            {' '}
+            {
             'finishing at: ' + moment .unix(Math.round(finishEpoc / 1000))
-            .tz('Pacific/Auckland') .format('h:mma')
+            .tz('Pacific/Auckland') .format('h:mma')}
           </p>
         ) : (
           ''

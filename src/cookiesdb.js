@@ -1,24 +1,37 @@
 import Cookies from 'universal-cookie';
+import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
-function setPeriods() {
+export function setPeriods() {
   const cookies = new Cookies();
   const periodCookie = cookies.get('currentPeriods');
   let currentPeriods = periodCookie ? periodCookie : [];
 
-  console.log('Current Periods = ');
-  console.log(currentPeriods);
-
   return currentPeriods;
+}
+
+export function getSetRunId() {
+  const cookies = new Cookies();
+  const runIdCookie = cookies.get('runId');
+  let runId = runIdCookie ? runIdCookie : uuidv4();
+  cookies.set('runId', runId, {
+    path: '/',
+  });
+  return runId;
 }
 
 function setPeriodsCookie(periods) {
   const cookies = new Cookies();
-  cookies.set('currentPeriods', periods, { path: '/' });
+  cookies.set('currentPeriods', periods, {
+    path: '/',
+    expires: moment(Date.now())
+      .add(30, 'y')
+      .toDate(),
+  });
 }
 
-function createNewPeriod(id, type) {
+export default function createNewPeriod(id, type, runId) {
   const newCurrentPeriods = setPeriods();
-  console.log(newCurrentPeriods.length);
 
   if (newCurrentPeriods.length > 0) {
     if (newCurrentPeriods.filter(period => period.id === id).length > 0) {
@@ -33,22 +46,21 @@ function createNewPeriod(id, type) {
     inserted_at: Date.now(),
     updated_at: Date.now(),
     completed_at: null,
+    runId: runId,
   };
-
-  console.log(newCurrentPeriods);
   newCurrentPeriods.push(newPeriod);
 
   setPeriodsCookie(newCurrentPeriods);
 }
 
-function completePeriod(id) {
+export function completePeriod(id) {
   const newCurrentPeriods = setPeriods();
   const completedPeriod = newCurrentPeriods.filter(
     period => period.id === id
   )[0];
 
   if (!completedPeriod) {
-    console.log('Period' + id + ' does not exist');
+    console.log('Period ' + id + ' does not exist');
     return;
   }
 
@@ -58,9 +70,13 @@ function completePeriod(id) {
   completedPeriod.completed_at = Date.now();
   newCurrentPeriods.push(completedPeriod);
 
-  setPeriodsCookie(newCurrentPeriods());
+  setPeriodsCookie(newCurrentPeriods);
 }
 
-export default function testSavePeriods() {
-  createNewPeriod('d5fba13b-8eae-438d-a64d-1b499000f858', 'session');
+export function countRunsPeriod(runId, type) {
+  const periods = setPeriods();
+  const filteredPeriodsRunId = periods.filter(
+    period => period.runId === runId && period.type == type
+  );
+  return filteredPeriodsRunId.length;
 }

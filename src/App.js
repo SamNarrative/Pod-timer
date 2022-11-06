@@ -3,7 +3,13 @@ import React from 'react';
 import { useEffect, useState, useRef } from 'react';
 import moment from 'moment';
 import 'moment-timezone';
-import testSavePeriods from './cookiesdb';
+import createNewPeriod, {
+  completePeriod,
+  setPeriods,
+  countRunsPeriod,
+  getSetRunId,
+} from './cookiesdb';
+import { v4 as uuidv4 } from 'uuid';
 
 const { ipcRenderer } = window.require('electron');
 moment().format();
@@ -17,15 +23,18 @@ export default function App() {
 }
 
 function ClockWrapper() {
-  const [time, setTime] = useState(1500);
+  const [time, setTime] = useState(10);
   const [timerActive, setTimerActive] = useState(false);
   const [sessionLengthTime, setSessionLengthTime] = useState(time);
-  const [breakLengthTime, setBreakLengthTime] = useState(300);
+  const [breakLengthTime, setBreakLengthTime] = useState(10);
   const [session, setSession] = useState(true);
   const [beep, setBeep] = useState('');
   const [finishEpoc, setFinishEpoc] = useState();
   const [mouseEntered, setMouseEntered] = useState(false);
   const clockWarpperRef = useRef(null);
+  const [periodId, setPeriodId] = useState(null);
+  const [autoContinue, setAutoContinue] = useState(true);
+  const runId = getSetRunId();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,6 +55,13 @@ function ClockWrapper() {
     return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
   }
 
+  function createNewPeriodFromRender(type) {
+        const id = uuidv4();
+        setPeriodId(id);
+        createNewPeriod(id, type, runId);
+        console.log('created session: ' + id);
+      }
+
   function handleTimerClick() {
     setTimerActive(!timerActive);
     setFinishEpoc(Date.now() + time * 1000);
@@ -54,7 +70,10 @@ function ClockWrapper() {
   function handleResetClick() {
     session ? setTime(sessionLengthTime) : setTime(breakLengthTime);
     setTimerActive(false);
-    testSavePeriods();
+  }
+
+  function handleInfoClick() {
+    setPeriods();
   }
 
   function handleMinimse() {
@@ -105,17 +124,31 @@ function ClockWrapper() {
 
   useEffect(() => {
     setBeep(document.getElementById('beep'));
-  }, []);
+    let newSessionCreated = false;
+    if (time ===  sessionLengthTime) {
+      console.log(time, session ? sessionLengthTime  : breakLengthTime, (time === session ? sessionLengthTime  : breakLengthTime ) )
+      newSessionCreated = true;
+      createNewPeriodFromRender(session ? 'session' : 'break');
+    }     
 
-  if (time === 0) {
-    setSession(!session);
-    session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
-    session
-      ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
-      : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+    if (time === 0) {
 
-    beep.play();
-  }
+      completePeriod(periodId);
+
+      // if (!newSessionCreated) {
+      //   newSessionCreated = true;
+      //   // This seems a bit werid but doing the opposite from above as it should be during the state?
+      //   createNewPeriodFromRender(!session ? 'session' : 'break');
+      // }
+
+      setSession(!session);
+      session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
+      session
+        ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
+        : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+
+      beep.play();
+    }}, [time, session]);
 
   return (
     <div
@@ -134,11 +167,13 @@ function ClockWrapper() {
         time={time}
         mouseEntered={mouseEntered}
         handleMinimse={handleMinimse}
+        runId={runId}
       />
       <SessionButtons
         handleTimerClick={handleTimerClick}
         handleResetClick={handleResetClick}
         handleSkipToNext={handleSkipToNext}
+        handleInfoClick={handleInfoClick}
         timerActive={timerActive}
         mouseEntered={mouseEntered}
       />
@@ -176,16 +211,26 @@ function Session({
   time,
   mouseEntered,
   handleMinimse,
+  runId,
 }) {
   return (
     <div id="session" className={time > 5 ? 'default' : 'finishing'}>
       <div id="titleText">
         <p className="sessionTitle" id="title">
-          {session ? 'session' : 'break'}
+          {session
+            ? 'session ' +
+              (countRunsPeriod(runId, 'session') < 1
+                ? 1
+                : countRunsPeriod(runId, 'session'))
+            : 'break ' +
+              (countRunsPeriod(runId, 'break') < 1
+                ? 1
+                : countRunsPeriod(runId, 'session'))}
         </p>
         {mouseEntered ? (
-          <div id="minimise" onClick={() => handleMinimse()}>
+          <div id="minimise">
             <svg
+              onClick={() => handleMinimse()}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="-5 -11 24 24"
               width="24"
@@ -196,8 +241,11 @@ function Session({
           </div>
         ) : finishEpoc && timerActive ? (
           <p className="sessionTitle" id="finishingAt">
-            {'finishing at: ' + moment.unix(Math.round(finishEpoc / 1000))
-            .tz('Pacific/Auckland').format('h:mma')}
+            {'end at: ' +
+              moment
+                .unix(Math.round(finishEpoc / 1000))
+                .tz('Pacific/Auckland')
+                .format('h:mma')}
           </p>
         ) : (
           ''
@@ -222,11 +270,12 @@ function SessionButtons({
   timerActive,
   mouseEntered,
   handleSkipToNext,
+  handleInfoClick,
 }) {
   return (
     <div id="sessionTimerButtons" className={mouseEntered ? 'show' : 'hide'}>
       <svg
-        onClick={() => handleResetClick()}
+        onClick={() => handleInfoClick()}
         className="timerButton"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="-2 -2 24 24"

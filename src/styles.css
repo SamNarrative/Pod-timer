@@ -169,7 +169,7 @@
 
 #titleText {
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 1fr;
   justify-items: stretch;
 }
 

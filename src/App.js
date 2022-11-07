@@ -5,7 +5,6 @@ import moment from 'moment';
 import 'moment-timezone';
 import createNewPeriod, {
   completePeriod,
-  setPeriods,
   countRunsPeriod,
   getSetRunId,
 } from './cookiesdb';
@@ -33,7 +32,7 @@ function ClockWrapper() {
   const [mouseEntered, setMouseEntered] = useState(false);
   const clockWarpperRef = useRef(null);
   const [periodId, setPeriodId] = useState(null);
-  const [autoContinue, setAutoContinue] = useState(true);
+  const [periodCount, setPeriodCount] = useState(1);
   const runId = getSetRunId();
 
   useEffect(() => {
@@ -56,11 +55,11 @@ function ClockWrapper() {
   }
 
   function createNewPeriodFromRender(type) {
-        const id = uuidv4();
-        setPeriodId(id);
-        createNewPeriod(id, type, runId);
-        console.log('created session: ' + id);
-      }
+    const id = uuidv4();
+    setPeriodId(id);
+    createNewPeriod(id, type, runId);
+    console.log('created session: ' + id);
+  }
 
   function handleTimerClick() {
     setTimerActive(!timerActive);
@@ -72,9 +71,7 @@ function ClockWrapper() {
     setTimerActive(false);
   }
 
-  function handleInfoClick() {
-    setPeriods();
-  }
+  function handleInfoClick() {}
 
   function handleMinimse() {
     ipcRenderer.send('minimize');
@@ -124,22 +121,25 @@ function ClockWrapper() {
 
   useEffect(() => {
     setBeep(document.getElementById('beep'));
-    let newSessionCreated = false;
-    if (time ===  sessionLengthTime) {
-      console.log(time, session ? sessionLengthTime  : breakLengthTime, (time === session ? sessionLengthTime  : breakLengthTime ) )
-      newSessionCreated = true;
+
+    if (time === sessionLengthTime && session) {
+      console.log(
+        time,
+        session ? sessionLengthTime : breakLengthTime,
+        time === session ? sessionLengthTime : breakLengthTime
+      );
       createNewPeriodFromRender(session ? 'session' : 'break');
-    }     
+    } else if (time === breakLengthTime && !session) {
+      console.log(
+        time,
+        session ? sessionLengthTime : breakLengthTime,
+        time === session ? sessionLengthTime : breakLengthTime
+      );
+      createNewPeriodFromRender(session ? 'session' : 'break');
+    }
 
     if (time === 0) {
-
       completePeriod(periodId);
-
-      // if (!newSessionCreated) {
-      //   newSessionCreated = true;
-      //   // This seems a bit werid but doing the opposite from above as it should be during the state?
-      //   createNewPeriodFromRender(!session ? 'session' : 'break');
-      // }
 
       setSession(!session);
       session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
@@ -148,7 +148,16 @@ function ClockWrapper() {
         : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
 
       beep.play();
-    }}, [time, session]);
+    }
+  }, [time, session]);
+
+  useEffect(() => {
+    const sessionToSend = session ? 'session' : 'break';
+    countRunsPeriod(runId, sessionToSend).then(result => {
+      console.log(result);
+      setPeriodCount(result < 1 ? 1 : result);
+    });
+  }, [session]);
 
   return (
     <div
@@ -168,6 +177,7 @@ function ClockWrapper() {
         mouseEntered={mouseEntered}
         handleMinimse={handleMinimse}
         runId={runId}
+        periodCount={periodCount}
       />
       <SessionButtons
         handleTimerClick={handleTimerClick}
@@ -212,20 +222,13 @@ function Session({
   mouseEntered,
   handleMinimse,
   runId,
+  periodCount,
 }) {
   return (
     <div id="session" className={time > 5 ? 'default' : 'finishing'}>
       <div id="titleText">
         <p className="sessionTitle" id="title">
-          {session
-            ? 'session ' +
-              (countRunsPeriod(runId, 'session') < 1
-                ? 1
-                : countRunsPeriod(runId, 'session'))
-            : 'break ' +
-              (countRunsPeriod(runId, 'break') < 1
-                ? 1
-                : countRunsPeriod(runId, 'session'))}
+          {session ? 'session ' + periodCount : 'break ' + periodCount}
         </p>
         {mouseEntered ? (
           <div id="minimise">

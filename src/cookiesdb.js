@@ -1,14 +1,18 @@
 import Cookies from 'universal-cookie';
-import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import Dexie from 'dexie';
 
-export function setPeriods() {
-  const cookies = new Cookies();
-  const periodCookie = cookies.get('currentPeriods');
-  let currentPeriods = periodCookie ? periodCookie : [];
-
-  return currentPeriods;
-}
+var db = new Dexie('PeriodDatabase');
+db.version(1).stores({
+  periods: `
+  id,
+  type,
+  completed,
+  inserted_at,
+  updated_at,
+  completed_at,
+  runId`,
+});
 
 export function getSetRunId() {
   const cookies = new Cookies();
@@ -20,25 +24,7 @@ export function getSetRunId() {
   return runId;
 }
 
-function setPeriodsCookie(periods) {
-  const cookies = new Cookies();
-  cookies.set('currentPeriods', periods, {
-    path: '/',
-    expires: moment(Date.now())
-      .add(30, 'y')
-      .toDate(),
-  });
-}
-
 export default function createNewPeriod(id, type, runId) {
-  const newCurrentPeriods = setPeriods();
-
-  if (newCurrentPeriods.length > 0) {
-    if (newCurrentPeriods.filter(period => period.id === id).length > 0) {
-      console.log('a session with that id already exists');
-      return;
-    }
-  }
   const newPeriod = {
     id: id,
     type: type,
@@ -48,35 +34,22 @@ export default function createNewPeriod(id, type, runId) {
     completed_at: null,
     runId: runId,
   };
-  newCurrentPeriods.push(newPeriod);
 
-  setPeriodsCookie(newCurrentPeriods);
+  db.periods.put(newPeriod);
 }
 
-export function completePeriod(id) {
-  const newCurrentPeriods = setPeriods();
-  const completedPeriod = newCurrentPeriods.filter(
-    period => period.id === id
-  )[0];
-
-  if (!completedPeriod) {
-    console.log('Period ' + id + ' does not exist');
-    return;
-  }
-
-  newCurrentPeriods.splice(newCurrentPeriods.indexOf(completedPeriod), 1);
-  completedPeriod.completed = true;
-  completedPeriod.updated_at = Date.now();
-  completedPeriod.completed_at = Date.now();
-  newCurrentPeriods.push(completedPeriod);
-
-  setPeriodsCookie(newCurrentPeriods);
+export async function completePeriod(id) {
+  await db.periods.update(id, {
+    completed: true,
+    updated_at: Date.now(),
+    completed_at: Date.now(),
+  });
 }
 
-export function countRunsPeriod(runId, type) {
-  const periods = setPeriods();
-  const filteredPeriodsRunId = periods.filter(
-    period => period.runId === runId && period.type == type
-  );
-  return filteredPeriodsRunId.length;
+export async function countRunsPeriod(periodRunId, periodType) {
+  console.log(periodType);
+  var x = db.periods.where({ type: periodType, runId: periodRunId });
+
+  const count = await x.count();
+  return count;
 }

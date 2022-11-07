@@ -4221,6 +4221,11 @@
     "address" "^1.0.1"
     "debug" "^2.6.0"
 
+"dexie@^3.2.2":
+  "integrity" "sha512-q5dC3HPmir2DERlX+toCBbHQXW5MsyrFqPFcovkH9N2S/UW/H3H5AWAB6iEOExeraAu+j+zRDG+zg/D7YhH0qg=="
+  "resolved" "https://registry.npmjs.org/dexie/-/dexie-3.2.2.tgz"
+  "version" "3.2.2"
+
 "diff-sequences@^29.2.0":
   "integrity" "sha512-413SY5JpYeSBZxmenGEmCVQ8mCgtFJF0w9PROdaS6z987XC2Pd2GOKqOITLtMftmyFZqgtCOb/QA7/Z3ZXfzIw=="
   "resolved" "https://registry.npmjs.org/diff-sequences/-/diff-sequences-29.2.0.tgz"

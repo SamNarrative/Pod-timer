@@ -22,10 +22,10 @@ export default function App() {
 }
 
 function ClockWrapper() {
-  const [time, setTime] = useState(10);
+  const [time, setTime] = useState(1500);
   const [timerActive, setTimerActive] = useState(false);
   const [sessionLengthTime, setSessionLengthTime] = useState(time);
-  const [breakLengthTime, setBreakLengthTime] = useState(10);
+  const [breakLengthTime, setBreakLengthTime] = useState(300);
   const [session, setSession] = useState(true);
   const [beep, setBeep] = useState('');
   const [finishEpoc, setFinishEpoc] = useState();
@@ -71,7 +71,9 @@ function ClockWrapper() {
     setTimerActive(false);
   }
 
-  function handleInfoClick() {}
+  function handleInfoClick() {
+    ipcRenderer.send('openInfo');
+  }
 
   function handleMinimse() {
     ipcRenderer.send('minimize');

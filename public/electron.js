@@ -24,6 +24,7 @@ function createWindow() {
   win.loadURL(
     isDev
       ? 'http://localhost:3000'
+      ? 'http://localhost:3000/main'
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 }
@@ -31,7 +32,8 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow);
+
+app.whenReady().then( createWindow);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -55,9 +57,27 @@ ipcMain.on('minimize', () => {
   }
 });
 
-ipcMain.on('resize-me', (event, arg) => {
-  const win = BrowserWindow.getFocusedWindow();
-  if (win) {
-    win.setSize(arg[0], arg[1]);
-  }
+ipcMain.on('openInfo', () => {
+  openModal();
 });
+
+function openModal() {
+  const win = BrowserWindow.getFocusedWindow();
+
+  const child = new BrowserWindow({
+    // parent: win,
+    width: 550,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false,
+    },
+  });
+
+  child.loadURL(
+    isDev
+      ? 'http://localhost:3000/info'
+      : `file://${path.join(__dirname, '../build/index.html')}`
+  )
+
+}

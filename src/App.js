@@ -121,6 +121,19 @@ function ClockWrapper() {
       : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
   }
 
+  function handleFeelingFeedbackComplete(feeling) {
+    completePeriod(periodId, feeling);
+    console.log(feeling);
+
+    setSession(!session);
+    session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
+    session
+      ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
+      : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+
+    setTimerActive(true);
+  }
+
   useEffect(() => {
     setBeep(document.getElementById('beep'));
 
@@ -141,13 +154,17 @@ function ClockWrapper() {
     }
 
     if (time === 0) {
-      completePeriod(periodId);
+      if (session) {
+        setTimerActive(false);
+      } else {
+        setSession(!session);
+        session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
+        session
+          ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
+          : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
 
-      setSession(!session);
-      session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
-      session
-        ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
-        : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+        setTimerActive(true);
+      }
 
       beep.play();
     }
@@ -161,6 +178,7 @@ function ClockWrapper() {
     });
   }, [session]);
 
+  console.log(time);
   return (
     <div
       id="clockWrapper"
@@ -168,19 +186,41 @@ function ClockWrapper() {
       onMouseLeave={() => setMouseEntered(false)}
       ref={clockWarpperRef}
     >
-      <Session
-        formattedTime={formatTime(time)}
-        handleTimerClick={handleTimerClick}
-        handleResetClick={handleResetClick}
-        timerActive={timerActive}
-        session={session}
-        finishEpoc={finishEpoc}
-        time={time}
-        mouseEntered={mouseEntered}
-        handleMinimse={handleMinimse}
-        runId={runId}
-        periodCount={periodCount}
-      />
+      {!timerActive && time === 0 && session ? (
+        <main>
+          <SessionProductivity
+            formattedTime={formatTime(time)}
+            handleTimerClick={handleTimerClick}
+            handleResetClick={handleResetClick}
+            timerActive={timerActive}
+            session={session}
+            finishEpoc={finishEpoc}
+            time={time}
+            mouseEntered={mouseEntered}
+            handleMinimse={handleMinimse}
+            runId={runId}
+            periodCount={periodCount}
+            handleFeelingFeedbackComplete={handleFeelingFeedbackComplete}
+          />{' '}
+        </main>
+      ) : (
+        <main>
+          <Session
+            formattedTime={formatTime(time)}
+            handleTimerClick={handleTimerClick}
+            handleResetClick={handleResetClick}
+            timerActive={timerActive}
+            session={session}
+            finishEpoc={finishEpoc}
+            time={time}
+            mouseEntered={mouseEntered}
+            handleMinimse={handleMinimse}
+            runId={runId}
+            periodCount={periodCount}
+          />{' '}
+        </main>
+      )}
+
       <SessionButtons
         handleTimerClick={handleTimerClick}
         handleResetClick={handleResetClick}
@@ -257,6 +297,19 @@ function Session({
         )}
       </div>
       <SessionTimer formattedTime={formattedTime} />
+    </div>
+  );
+}
+
+function SessionProductivity({ handleFeelingFeedbackComplete }) {
+  return (
+    <div id="productivity" className="finishing">
+      <div id="productivitytitle">
+        <p>How productive were you in that session?</p>
+      </div>
+      <ProductivityFeeling
+        handleFeelingFeedbackComplete={handleFeelingFeedbackComplete}
+      />
     </div>
   );
 }
@@ -370,6 +423,58 @@ function Control({ title, time, handleLengthChange, type }) {
           <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm1-7v4a1 1 0 0 1-2 0v-4H5a1 1 0 0 1 0-2h4V5a1 1 0 1 1 2 0v4h4a1 1 0 0 1 0 2h-4z"></path>
         </svg>
       </div>
+    </div>
+  );
+}
+
+function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
+  const [hoverfeeling, setHoverfeeling] = useState('');
+
+  return (
+    <div id="productivityWrapper">
+      <div id="feelings" onMouseLeave={() => setHoverfeeling('')}>
+        <div
+          className="feeling"
+          id="veryPoor"
+          onMouseEnter={() => setHoverfeeling('Very Poor')}
+          onClick={() => handleFeelingFeedbackComplete(1)}
+        >
+          😭
+        </div>
+        <div
+          className="feeling"
+          id="poor"
+          onMouseEnter={() => setHoverfeeling('Poor')}
+          onClick={() => handleFeelingFeedbackComplete(2)}
+        >
+          🙁
+        </div>
+        <div
+          className="feeling"
+          id="average"
+          onMouseEnter={() => setHoverfeeling('Okay')}
+          onClick={() => handleFeelingFeedbackComplete(3)}
+        >
+          😐
+        </div>
+        <div
+          className="feeling"
+          id="good"
+          onMouseEnter={() => setHoverfeeling('Good')}
+          onClick={() => handleFeelingFeedbackComplete(4)}
+        >
+          😃
+        </div>
+        <div
+          className="feeling"
+          id="veryGood"
+          onMouseEnter={() => setHoverfeeling('Very Good')}
+          onClick={() => handleFeelingFeedbackComplete(5)}
+        >
+          🤩
+        </div>
+      </div>
+      <p id="feelinghoverrtext">{hoverfeeling}</p>
     </div>
   );
 }

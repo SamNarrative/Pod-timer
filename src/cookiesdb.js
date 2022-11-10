@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Dexie from 'dexie';
 
 var db = new Dexie('PeriodDatabase');
-db.version(1).stores({
+db.version(2).stores({
   periods: `
   id,
   type,
@@ -11,7 +11,8 @@ db.version(1).stores({
   inserted_at,
   updated_at,
   completed_at,
-  runId`,
+  runId,
+  feelingScore`,
 });
 
 export function getSetRunId() {
@@ -27,6 +28,7 @@ export function getSetRunId() {
 export default function createNewPeriod(id, type, runId) {
   const newPeriod = {
     id: id,
+    feelingScore: 0,
     type: type,
     completed: false,
     inserted_at: Date.now(),
@@ -38,11 +40,13 @@ export default function createNewPeriod(id, type, runId) {
   db.periods.put(newPeriod);
 }
 
-export async function completePeriod(id) {
+export async function completePeriod(id, feeling) {
+  console.log('feeling', feeling);
   await db.periods.update(id, {
     completed: true,
     updated_at: Date.now(),
     completed_at: Date.now(),
+    feelingScore: feeling,
   });
 }
 

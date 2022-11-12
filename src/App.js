@@ -153,7 +153,7 @@ function ClockWrapper() {
       createNewPeriodFromRender(session ? 'session' : 'break');
     }
 
-    if (time === 0) {
+    if (time <= 0) {
       if (session) {
         setTimerActive(false);
       } else {
@@ -439,7 +439,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Very Poor')}
           onClick={() => handleFeelingFeedbackComplete(1)}
         >
-          😭
+          <span role="img">😭</span>
         </div>
         <div
           className="feeling"
@@ -447,7 +447,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Poor')}
           onClick={() => handleFeelingFeedbackComplete(2)}
         >
-          🙁
+          <span role="img">🙁</span>
         </div>
         <div
           className="feeling"
@@ -455,7 +455,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Okay')}
           onClick={() => handleFeelingFeedbackComplete(3)}
         >
-          😐
+          <span role="img">😐</span>
         </div>
         <div
           className="feeling"
@@ -463,7 +463,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Good')}
           onClick={() => handleFeelingFeedbackComplete(4)}
         >
-          😃
+          <span role="img">😃</span>
         </div>
         <div
           className="feeling"
@@ -471,7 +471,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Very Good')}
           onClick={() => handleFeelingFeedbackComplete(5)}
         >
-          🤩
+          <span role="img">🤩</span>
         </div>
       </div>
       <p id="feelinghoverrtext">{hoverfeeling}</p>

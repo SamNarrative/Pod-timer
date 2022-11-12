@@ -64,9 +64,13 @@ function openModal() {
   const win = BrowserWindow.getFocusedWindow();
 
   const child = new BrowserWindow({
-    // parent: win,
+    titleBarStyle: "hiddenInset",
     width: 550,
-    height: 600,
+    height: 700,
+    minHeight: 700, 
+    maxHeight: 700, 
+    maxWidth: 550,
+    minWidth: 550,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,

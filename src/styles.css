@@ -12,22 +12,6 @@
   user-select: none;
 }
 
-.main-visual__circle {
-  overflow: hidden;
-  width: 800px;
-  height: 800px;
-  position: absolute;
-  z-index: -10;
-  top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  box-shadow: inset 7.64834px 4.37048px 72px #ff9d66,
-    inset -24.0376px -24.0376px 49.1679px #ff3f62,
-    inset 36.0564px 36.0564px 127.836px #f38b9e;
-  transform: translate(-50%, -50%);
-  animation: cycle-circle 5s ease infinite alternate;
-}
-
 #clockWrapper {
   min-width: 200px;
   min-height: 162px;
@@ -36,7 +20,8 @@
   justify-content: center;
 }
 
-#session, #productivity {
+#session,
+#productivity {
   width: 300px;
   height: 140px;
   border-radius: 48px;
@@ -55,7 +40,7 @@
   margin-top: 5px;
 }
 
-#session.default{
+#session.default {
   color: #2c2c2c;
   background-color: hsla(0, 0%, 100%, 0.9);
   background-image: radial-gradient(
@@ -66,17 +51,18 @@
     radial-gradient(at 0% 100%, hsla(22, 100%, 77%, 0.1) 0px, transparent 50%);
 }
 
-
-
 #productivity.finishing {
   color: #ffffff;
-  background-color:#ff99ad;
-  background-image:
-  radial-gradient(at 16% 14%, hsla(322,64%,74%,1) 0px, transparent 50%),
-  radial-gradient(at 43% 9%, hsla(19,64%,68%,1) 0px, transparent 50%),
-  radial-gradient(at 73% 68%, hsla(352,86%,71%,1) 0px, transparent 50%),
-  radial-gradient(at 14% 5%, hsla(216,62%,63%,1) 0px, transparent 50%),
-  radial-gradient(at 84% 38%, hsla(35,78%,77%,1) 0px, transparent 50%);
+  background-color: #ff99ad;
+  background-image: radial-gradient(
+      at 16% 14%,
+      hsla(322, 64%, 74%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 43% 9%, hsla(19, 64%, 68%, 1) 0px, transparent 50%),
+    radial-gradient(at 73% 68%, hsla(352, 86%, 71%, 1) 0px, transparent 50%),
+    radial-gradient(at 14% 5%, hsla(216, 62%, 63%, 1) 0px, transparent 50%),
+    radial-gradient(at 84% 38%, hsla(35, 78%, 77%, 1) 0px, transparent 50%);
 }
 
 #session.finishing {
@@ -200,7 +186,7 @@
 
 #feelings {
   display: grid;
-  grid-template-columns: repeat( 5, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   font-size: 45px;
   margin-top: 15px;
   padding: 0 5px;
@@ -210,15 +196,170 @@
 #feelinghoverrtext {
   padding-bottom: 2px;
   margin-top: 5px !important;
-
 }
 .feeling {
   height: 57px;
 }
 
 .feeling:hover {
- font-size: 50px; 
+  font-size: 50px;
 }
+
+#hiddenHeader {
+  width: 100vw;
+  height: 1.5rem;
+  -webkit-app-region: drag;
+}
+
+nav {
+  background-color: #5e6c84;
+  width: 14vw;
+  height: 100%;
+
+  color: white;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  -webkit-app-region: drag;
+  padding-top: 30px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding: 0;
+}
+
+.buttonOutline {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.buttonOutline:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.buttonOutlineSelected {
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+li {
+  padding: 10px;
+  color: #ffffff;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#dashboard {
+  margin: 0 4vw 0 18vw;
+}
+
+#dashHeader {
+  -webkit-app-region: drag;
+}
+
+#dashHeader > h1 {
+  font-size: 55px;
+  margin: 0px;
+  font-weight: 400;
+}
+
+#dashHeader > h4 {
+  font-size: 15px;
+  margin: 0px 4px;
+  font-weight: 800;
+  color: #595e77;
+}
+
+.dashBox {
+  border-radius: 25px;
+  padding: 20px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+#today {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 1fr;
+  gap: 10px;
+  margin: 2rem 0;
+}
+
+#todayText {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+}
+
+#todayText > h3,
+#todayText > p {
+  margin: 0;
+}
+
+#todayText > p {
+  font-size: 12px;
+  color: #636571;
+}
+
+#sessionsToday,
+#minutesToday {
+  display: grid;
+  gap: 2px;
+}
+
+#sessionsTodayInfo > h4,
+#sessionsTodayInfo > p,
+#minutesTodayInfo > h4,
+#minutesTodayInfo > p {
+  margin: 0;
+}
+#sessionsTodayInfo > h4,
+#minutesTodayInfo > h4 {
+  font-size: 27px;
+  font-weight: 400;
+}
+#sessionsTodayInfo > p,
+#minutesTodayInfo > p {
+  font-size: 11px;
+}
+
+#overallStats {
+  height: 37vh;
+}
+
+#overallStats > h2 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+
+.chartWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 @keyframes fadein {
   from {
     opacity: 0;
@@ -241,7 +382,6 @@
   }
 }
 
-
 @keyframes changeColour {
   from {
     color: #2c2c2c;
@@ -255,12 +395,15 @@
   }
   to {
     color: #ffffff;
-    background-color:#ff99ad;
-    background-image:
-    radial-gradient(at 16% 14%, hsla(322,64%,74%,1) 0px, transparent 50%),
-    radial-gradient(at 43% 9%, hsla(19,64%,68%,1) 0px, transparent 50%),
-    radial-gradient(at 73% 68%, hsla(352,86%,71%,1) 0px, transparent 50%),
-    radial-gradient(at 14% 5%, hsla(216,62%,63%,1) 0px, transparent 50%),
-    radial-gradient(at 84% 38%, hsla(35,78%,77%,1) 0px, transparent 50%);
+    background-color: #ff99ad;
+    background-image: radial-gradient(
+        at 16% 14%,
+        hsla(322, 64%, 74%, 1) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 43% 9%, hsla(19, 64%, 68%, 1) 0px, transparent 50%),
+      radial-gradient(at 73% 68%, hsla(352, 86%, 71%, 1) 0px, transparent 50%),
+      radial-gradient(at 14% 5%, hsla(216, 62%, 63%, 1) 0px, transparent 50%),
+      radial-gradient(at 84% 38%, hsla(35, 78%, 77%, 1) 0px, transparent 50%);
   }
 }

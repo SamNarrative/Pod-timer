@@ -1,6 +1,16 @@
 import Cookies from 'universal-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import Dexie from 'dexie';
+import moment from 'moment';
+
+function convertToCurrentDateTZ(epochDate) {
+  const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const currentDateTZ = moment
+    .unix(Math.round(Date.now() / 1000))
+    .tz(clientTZ)
+    .format('YYYY-MM-DD');
+  return currentDateTZ;
+}
 
 var db = new Dexie('PeriodDatabase');
 db.version(2).stores({
@@ -51,8 +61,9 @@ export async function completePeriod(id, feeling) {
 }
 
 export async function countRunsPeriod(periodRunId, periodType) {
-  console.log(periodType);
-  var x = db.periods.where({ type: periodType, runId: periodRunId });
+  const currentDate = convertToCurrentDateTZ(Date.now());
+  var x = db.periods.where('type').equals(periodType)
+  .and(function(item) { return convertToCurrentDateTZ(item.inserted_at) === currentDate});
 
   const count = await x.count();
   return count;

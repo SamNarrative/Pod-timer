@@ -32,7 +32,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 
-app.whenReady().then( createWindow);
+app.whenReady().then(createWindow);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -64,23 +64,30 @@ function openModal() {
   const win = BrowserWindow.getFocusedWindow();
 
   const child = new BrowserWindow({
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: 'hiddenInset',
     width: 550,
     height: 700,
-    minHeight: 700, 
-    maxHeight: 700, 
+    minHeight: 700,
+    maxHeight: 700,
+
     maxWidth: 550,
     minWidth: 550,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
     },
+    transparent: true,
+
+    modal: true,
+    show: false,
   });
 
   child.loadURL(
     isDev
       ? 'http://localhost:3000/info'
       : `file://${path.join(__dirname, '../build/index.html')}`
-  )
-
+  );
+  child.webContents.on('did-finish-load', () => {
+    child.show();
+  });
 }

@@ -267,13 +267,20 @@ li {
   color: #ffffff;
 }
 
-main {
+#hiddenHeader {
+  background-color: #ffffff;
+}
+
+#infomain {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #ffffff;
 }
 #dashboard {
   margin: 0 4vw 0 18vw;
+  user-select: none;
+  height: 675px;
 }
 
 #dashHeader {

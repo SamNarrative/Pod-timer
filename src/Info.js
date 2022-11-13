@@ -13,6 +13,13 @@ import {
   Label,
 } from 'recharts';
 
+import moment from 'moment';
+import 'moment-timezone';
+import {
+  countRunsPeriodComplete,
+  sessionsCompleteTodayObject,
+} from './cookiesdb';
+
 const data3 = [
   {
     name: 'A',
@@ -90,13 +97,6 @@ class Example extends PureComponent {
   }
 }
 
-const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-  { name: 'Group C', value: 300 },
-  { name: 'Group D', value: 200 },
-];
-
 const data2 = [
   { name: 'Group A', value: 400 },
   { name: 'Group B', value: 300 },
@@ -104,28 +104,38 @@ const data2 = [
 ];
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-class TodaySessionsPie extends PureComponent {
-  render() {
-    return (
-      <PieChart width={80} height={80} onMouseEnter={this.onPieEnter}>
-        <Pie
-          data={data}
-          cx={35}
-          cy={35}
-          innerRadius={20}
-          outerRadius={40}
-          fill="#8884d8"
-          paddingAngle={2}
-          dataKey="value"
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-      </PieChart>
-    );
-  }
+function TodaySessionsPie() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    sessionsCompleteTodayObject().then(result => {
+      setData(result);
+    });
+  }, []);
+  return (
+    <PieChart width={80} height={80}>
+      <Pie
+        data={data}
+        cx={35}
+        cy={35}
+        innerRadius={20}
+        outerRadius={40}
+        fill="#8884d8"
+        paddingAngle={2}
+        dataKey="value"
+      >
+        {!data
+          ? null
+          : data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+      </Pie>
+      <Tooltip />
+    </PieChart>
+  );
 }
 
 class TodayProductivityPie extends PureComponent {
@@ -142,7 +152,7 @@ class TodayProductivityPie extends PureComponent {
           paddingAngle={2}
           dataKey="value"
         >
-          {data.map((entry, index) => (
+          {data2.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
@@ -161,8 +171,8 @@ export default function Info() {
       <header>
         <Navbar openSection={openSection} setOpenSection={setOpenSection} />
       </header>
-      <main>
-        <Dashboard />
+      <main id="infomain">
+        {openSection === 'graph' ? <Dashboard /> : 'sd'}
       </main>
     </div>
   );
@@ -232,7 +242,12 @@ function DashboardToday() {
     <section className="dashBox" id="today">
       <div id="todayText">
         <h3>Today</h3>
-        <p>15th Nov 22</p>
+        <p>
+          {moment
+            .unix(Math.round(Date.now() / 1000))
+            .tz('Pacific/Auckland')
+            .format('DD MMM YY')}
+        </p>
       </div>
       <SessionsToday />
       <MinutesToday />
@@ -241,10 +256,19 @@ function DashboardToday() {
 }
 
 function SessionsToday() {
+  const [sessionsTodayCount, setSessionsTodayCount] = useState('');
+
+  sessionsCompleteTodayObject();
+
+  useEffect(() => {
+    countRunsPeriodComplete('session').then(result => {
+      setSessionsTodayCount(result);
+    });
+  }, []);
   return (
     <div className="dashBox" id="sessionsToday">
       <div id="sessionsTodayInfo">
-        <h4>57</h4>
+        <h4>{sessionsTodayCount}</h4>
         <p>Sessions</p>
       </div>
       <div className="chartWrapper">

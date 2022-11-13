@@ -22,10 +22,10 @@ export default function App() {
 }
 
 function ClockWrapper() {
-  const [time, setTime] = useState(1500);
+  const [time, setTime] = useState(10);
   const [timerActive, setTimerActive] = useState(false);
   const [sessionLengthTime, setSessionLengthTime] = useState(time);
-  const [breakLengthTime, setBreakLengthTime] = useState(300);
+  const [breakLengthTime, setBreakLengthTime] = useState(10);
   const [session, setSession] = useState(true);
   const [beep, setBeep] = useState('');
   const [finishEpoc, setFinishEpoc] = useState();
@@ -123,7 +123,7 @@ function ClockWrapper() {
 
   function handleFeelingFeedbackComplete(feeling) {
     completePeriod(periodId, feeling);
-    console.log(feeling);
+
 
     setSession(!session);
     session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
@@ -138,18 +138,8 @@ function ClockWrapper() {
     setBeep(document.getElementById('beep'));
 
     if (time === sessionLengthTime && session) {
-      console.log(
-        time,
-        session ? sessionLengthTime : breakLengthTime,
-        time === session ? sessionLengthTime : breakLengthTime
-      );
       createNewPeriodFromRender(session ? 'session' : 'break');
     } else if (time === breakLengthTime && !session) {
-      console.log(
-        time,
-        session ? sessionLengthTime : breakLengthTime,
-        time === session ? sessionLengthTime : breakLengthTime
-      );
       createNewPeriodFromRender(session ? 'session' : 'break');
     }
 
@@ -172,13 +162,11 @@ function ClockWrapper() {
 
   useEffect(() => {
     const sessionToSend = session ? 'session' : 'break';
-    countRunsPeriod(runId, sessionToSend).then(result => {
-      console.log(result);
+    countRunsPeriod(sessionToSend).then(result => {
       setPeriodCount(result < 1 ? 1 : result);
     });
   }, [session]);
 
-  console.log(time);
   return (
     <div
       id="clockWrapper"

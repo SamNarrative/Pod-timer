@@ -6,11 +6,19 @@ import moment from 'moment';
 function convertToCurrentDateTZ(epochDate) {
   const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const currentDateTZ = moment
-    .unix(Math.round(Date.now() / 1000))
+    .unix(Math.round(epochDate / 1000))
     .tz(clientTZ)
     .format('YYYY-MM-DD');
   return currentDateTZ;
 }
+
+const feelingScoreString = {
+  '1': 'Very Poor',
+  '2': 'Poor',
+  '3': 'Okay',
+  '4': 'Good',
+  '5': 'Very Good',
+};
 
 var db = new Dexie('PeriodDatabase');
 db.version(2).stores({
@@ -51,7 +59,6 @@ export default function createNewPeriod(id, type, runId) {
 }
 
 export async function completePeriod(id, feeling) {
-  console.log('feeling', feeling);
   await db.periods.update(id, {
     completed: true,
     updated_at: Date.now(),
@@ -60,11 +67,59 @@ export async function completePeriod(id, feeling) {
   });
 }
 
-export async function countRunsPeriod(periodRunId, periodType) {
+export async function countRunsPeriod(periodType) {
   const currentDate = convertToCurrentDateTZ(Date.now());
-  var x = db.periods.where('type').equals(periodType)
-  .and(function(item) { return convertToCurrentDateTZ(item.inserted_at) === currentDate});
+  var x = db.periods
+    .where('type')
+    .equals(periodType)
+    .and(function(item) {
+      return convertToCurrentDateTZ(item.inserted_at) === currentDate;
+    });
 
   const count = await x.count();
   return count;
+}
+
+export async function countRunsPeriodComplete(periodType) {
+  const currentDate = convertToCurrentDateTZ(Date.now());
+  var x = db.periods
+    .where('type')
+    .equals(periodType)
+    .and(function(item) {
+      return (
+        convertToCurrentDateTZ(item.inserted_at) === currentDate &&
+        item.completed
+      );
+    });
+  const count = await x.count();
+  return count;
+}
+
+export async function sessionsCompleteTodayObject() {
+  const currentDate = convertToCurrentDateTZ(Date.now());
+  const result = {};
+  var x = await db.periods
+    .orderBy('feelingScore')
+    .filter(function(period) {
+      return period.type === 'session';
+    })
+
+    .and(function(item) {
+      return (
+        convertToCurrentDateTZ(item.inserted_at) === currentDate &&
+        item.completed
+      );
+    });
+  await x.eachKey(feeling => {
+    result[feeling] = (result[feeling] || 0) + 1;
+  });
+
+  const resultToArray = Object.entries(result);
+
+  const formattedResult = resultToArray.map(result => ({
+    name: feelingScoreString[result[0]],
+    value: result[1],
+  }));
+
+  return formattedResult;
 }

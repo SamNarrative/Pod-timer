@@ -18,6 +18,7 @@ import 'moment-timezone';
 import {
   countRunsPeriodComplete,
   sessionsCompleteTodayObject,
+  productivityPercentageTodayObject, productivityPercentageTodayOutcome, 
 } from './cookiesdb';
 
 const data3 = [
@@ -87,7 +88,7 @@ class Example extends PureComponent {
             <Label value="Date" offset={0} position="bottom" />
           </XAxis>
           <YAxis />
-          <Tooltip />
+          <Tooltip position={{ x: -40, y: 90 }} />
 
           <Bar dataKey="pv" stackId="a" fill="#8884d8" />
           <Bar dataKey="amt" stackId="a" fill="#82ca9d" />
@@ -118,7 +119,7 @@ function TodaySessionsPie() {
         data={data}
         cx={35}
         cy={35}
-        innerRadius={20}
+        innerRadius={10}
         outerRadius={40}
         fill="#8884d8"
         paddingAngle={2}
@@ -133,33 +134,46 @@ function TodaySessionsPie() {
               />
             ))}
       </Pie>
-      <Tooltip />
+      <Tooltip position={{ x: -40, y: 90 }} />
     </PieChart>
   );
 }
 
-class TodayProductivityPie extends PureComponent {
-  render() {
-    return (
-      <PieChart width={80} height={80} onMouseEnter={this.onPieEnter}>
-        <Pie
-          data={data2}
-          cx={35}
-          cy={35}
-          innerRadius={20}
-          outerRadius={40}
-          fill="#8884d8"
-          paddingAngle={2}
-          dataKey="value"
-        >
-          {data2.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-      </PieChart>
-    );
-  }
+function TodayProductivityPie() {
+  const [data, setData] = useState(null);
+
+  const formatTooltip = (value) => (value * 100).toFixed(0) + "%";
+
+  useEffect(() => {
+    productivityPercentageTodayObject().then(result => {
+      setData(result);
+    });
+  }, []);
+
+  return (
+    <PieChart width={80} height={80}>
+      <Pie
+        data={data}
+        cx={35}
+        cy={35}
+        innerRadius={10}
+        outerRadius={40}
+        fill="#8884d8"
+        paddingAngle={2}
+        dataKey="value"
+      >
+        {!data
+          ? null
+          : data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+      </Pie>
+      <Tooltip position={{ x: -70, y: 90 }} wrapperStyle={0} formatter={formatTooltip}/>
+    </PieChart>
+  );
 }
 
 export default function Info() {
@@ -225,6 +239,7 @@ function Navbar({ openSection, setOpenSection }) {
 }
 
 function Dashboard() {
+  productivityPercentageTodayObject();
   return (
     <div id="dashboard">
       <section id="dashHeader">
@@ -258,8 +273,6 @@ function DashboardToday() {
 function SessionsToday() {
   const [sessionsTodayCount, setSessionsTodayCount] = useState('');
 
-  sessionsCompleteTodayObject();
-
   useEffect(() => {
     countRunsPeriodComplete('session').then(result => {
       setSessionsTodayCount(result);
@@ -268,8 +281,16 @@ function SessionsToday() {
   return (
     <div className="dashBox" id="sessionsToday">
       <div id="sessionsTodayInfo">
-        <h4>{sessionsTodayCount}</h4>
-        <p>Sessions</p>
+        {sessionsTodayCount < 1 ? (
+          <>
+            <p>No completed sessions yet today</p>
+          </>
+        ) : (
+          <>
+            <h4>{sessionsTodayCount}</h4>
+            <p>Sessions</p>
+          </>
+        )}
       </div>
       <div className="chartWrapper">
         <div></div>
@@ -280,11 +301,26 @@ function SessionsToday() {
 }
 
 function MinutesToday() {
+    const [productivePercentage, setProductivePercentageTodayCount] = useState('');
+
+    useEffect(() => {
+        productivityPercentageTodayOutcome().then(result => {
+        setProductivePercentageTodayCount(result);
+      })});
+
   return (
     <div className="dashBox" id="minutesToday">
       <div id="minutesTodayInfo">
-        <h4>70%</h4>
-        <p>Productive</p>
+      {!productivePercentage ? (
+          <>
+            <p>No completed sessions yet today</p>
+          </>
+        ) : (
+          <>
+            <h4>{(productivePercentage * 100).toFixed(0) + "%"}</h4>
+            <p>Productive</p>
+          </>
+        )}
       </div>
       <div className="chartWrapper">
         <div></div>

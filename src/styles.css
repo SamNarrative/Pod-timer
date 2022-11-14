@@ -271,11 +271,16 @@ li {
   background-color: #ffffff;
 }
 
+.info {
+  height: 100vh;
+}
+
 #infomain {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
+  font-family: 'Inter var', sans-serif;
 }
 #dashboard {
   margin: 0 4vw 0 18vw;

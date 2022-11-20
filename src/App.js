@@ -124,7 +124,6 @@ function ClockWrapper() {
   function handleFeelingFeedbackComplete(feeling) {
     completePeriod(periodId, feeling);
 
-
     setSession(!session);
     session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
     session

@@ -71,7 +71,6 @@
 
 #session p {
   font-weight: lighter;
-  margin: 10px 20px;
 }
 #sessionTimerText {
   display: grid;
@@ -178,10 +177,12 @@
 
 #title {
   text-align: left;
+  margin: 10px 0px 10px 20px;
 }
 
 #finishingAt {
   text-align: right;
+  margin: 10px 20px 10px 0px;
 }
 
 #feelings {

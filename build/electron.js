@@ -57,6 +57,7 @@ ipcMain.on('minimize', () => {
 });
 
 ipcMain.on('openInfo', () => {
+
   openModal();
 });
 
@@ -69,14 +70,13 @@ function openModal() {
     height: 700,
     minHeight: 700,
     maxHeight: 700,
-
     maxWidth: 550,
     minWidth: 550,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
     },
-    transparent: true,
+    
 
     modal: true,
     show: false,

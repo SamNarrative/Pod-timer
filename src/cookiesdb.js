@@ -3,6 +3,14 @@ import { v4 as uuidv4 } from 'uuid';
 import Dexie from 'dexie';
 import moment from 'moment';
 
+const feelingScoreToString = {
+  '1': 'Very Poor',
+  '2': 'Poor',
+  '3': 'Okay',
+  '4': 'Good',
+  '5': 'Very Good',
+};
+
 function convertToCurrentDateTZ(epochDate) {
   const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const currentDateTZ = moment
@@ -11,6 +19,15 @@ function convertToCurrentDateTZ(epochDate) {
     .format('YYYY-MM-DD');
   return currentDateTZ;
 }
+
+const groupBy = (items, key) =>
+  items.reduce(
+    (result, item) => ({
+      ...result,
+      [item[key]]: [...(result[item[key]] || []), item],
+    }),
+    {}
+  );
 
 const feelingScoreString = {
   '1': 'Very Poor Sessions',
@@ -124,6 +141,52 @@ export async function sessionsCompleteTodayObject() {
   return formattedResult;
 }
 
+export async function sessionsCompletePastSeven() {
+  const epochDate = Date.now();
+  const epochWeekAgo = Date.now() - 604800000;
+
+  var x = await db.periods
+    .orderBy('inserted_at')
+    .filter(function(period) {
+      return period.type === 'session';
+    })
+
+    .and(function(item) {
+      return (
+        item.inserted_at >= epochWeekAgo &&
+        item.completed &&
+        item.inserted_at <= epochDate
+      );
+    });
+
+  const resultToArray = await x.toArray();
+
+  const resultToDay = await resultToArray.map(result => {
+    return {
+      day: convertToCurrentDateTZ(result.inserted_at),
+      feelingScore: result.feelingScore,
+    };
+  });
+
+  const groupedDaysArray = Object.entries(groupBy(resultToDay, 'day'));
+  const feelingScoreArray = groupedDaysArray.map(day => {
+    const groupedArray = Object.entries(groupBy(day[1], 'feelingScore'));
+    const groupedArrayScoreSummarised = Object.fromEntries(
+      groupedArray.map(feeling => {
+        return [feelingScoreToString[feeling[0]], feeling[1].length];
+      })
+    );
+    console.log('day', groupedArrayScoreSummarised);
+    const resultObject = {
+      name: day[0],
+      ...groupedArrayScoreSummarised,
+    };
+    return resultObject;
+  });
+
+  return feelingScoreArray;
+}
+
 export async function productivityPercentageTodayObject() {
   const currentDate = convertToCurrentDateTZ(Date.now());
   const result = {};
@@ -169,9 +232,24 @@ export async function productivityPercentageTodayObject() {
       0
     );
   const productiveResultsArray = [
-    { name: 'Low Productivity', value: (resultsArrayToProductivityScoreLow/ resultsArrayToProductivityScoreTotal) },
-    { name: 'Medium Productivity', value: (resultsArrayToProductivityScoreOkay/ resultsArrayToProductivityScoreTotal)},
-    { name: 'High Productivity', value: (resultsArrayToProductivityScoreGood/ resultsArrayToProductivityScoreTotal)},
+    {
+      name: 'Low Productivity',
+      value:
+        resultsArrayToProductivityScoreLow /
+        resultsArrayToProductivityScoreTotal,
+    },
+    {
+      name: 'Medium Productivity',
+      value:
+        resultsArrayToProductivityScoreOkay /
+        resultsArrayToProductivityScoreTotal,
+    },
+    {
+      name: 'High Productivity',
+      value:
+        resultsArrayToProductivityScoreGood /
+        resultsArrayToProductivityScoreTotal,
+    },
   ];
 
   return productiveResultsArray;
@@ -216,11 +294,14 @@ export async function productivityPercentageTodayOutcome() {
       0
     );
 
-  if (resultsArrayToProductivityScoreTotal < 1 ) {
-    return 0
+  if (resultsArrayToProductivityScoreTotal < 1) {
+    return 0;
   }
 
-  const productivePercentage = ((resultsArrayToProductivityScoreOkay + resultsArrayToProductivityScoreGood ) / resultsArrayToProductivityScoreTotal )
+  const productivePercentage =
+    (resultsArrayToProductivityScoreOkay +
+      resultsArrayToProductivityScoreGood) /
+    resultsArrayToProductivityScoreTotal;
 
   return productivePercentage;
 }

@@ -18,7 +18,9 @@ import 'moment-timezone';
 import {
   countRunsPeriodComplete,
   sessionsCompleteTodayObject,
-  productivityPercentageTodayObject, productivityPercentageTodayOutcome, 
+  productivityPercentageTodayObject,
+  productivityPercentageTodayOutcome,
+  sessionsCompletePastSeven,
 } from './cookiesdb';
 
 const data3 = [
@@ -66,36 +68,43 @@ const data3 = [
   },
 ];
 
-class Example extends PureComponent {
-  static demoUrl = 'https://codesandbox.io/s/mixed-bar-chart-q4hgc';
+function Example() {
+  const [data, setData] = useState(null);
 
-  render() {
-    return (
-      <ResponsiveContainer width="100%" height="90%" maxHeight="90%">
-        <BarChart
-          width={500}
-          height={200}
-          data={data3}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 20,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name">
-            <Label value="Date" offset={0} position="bottom" />
-          </XAxis>
-          <YAxis />
-          <Tooltip position={{ x: -40, y: 90 }} />
+  useEffect(() => {
+    sessionsCompletePastSeven().then(result => {
+      setData(result);
+    });
+  }, []);
 
-          <Bar dataKey="pv" stackId="a" fill="#8884d8" />
-          <Bar dataKey="amt" stackId="a" fill="#82ca9d" />
-        </BarChart>
-      </ResponsiveContainer>
-    );
-  }
+  return (
+    <ResponsiveContainer width="100%" height="90%" maxHeight="90%">
+      <BarChart
+        width={500}
+        height={200}
+        data={data}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 20,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name">
+          <Label value="Date" offset={0} position="bottom" />
+        </XAxis>
+        <YAxis />
+        <Tooltip position={{ x: -40, y: 90 }} />
+
+        <Bar dataKey="Very Poor" stackId="a" fill="#EE6055" />
+        <Bar dataKey="Poor" stackId="a" fill="#F1A373" />
+        <Bar dataKey="Okay" stackId="a" fill="#FFD97D" />
+        <Bar dataKey="Good" stackId="a" fill="#9ee2a0" />
+        <Bar dataKey="Very Good" stackId="a" fill="#60D394" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
 }
 
 const data2 = [
@@ -142,7 +151,7 @@ function TodaySessionsPie() {
 function TodayProductivityPie() {
   const [data, setData] = useState(null);
 
-  const formatTooltip = (value) => (value * 100).toFixed(0) + "%";
+  const formatTooltip = value => (value * 100).toFixed(0) + '%';
 
   useEffect(() => {
     productivityPercentageTodayObject().then(result => {
@@ -171,7 +180,11 @@ function TodayProductivityPie() {
               />
             ))}
       </Pie>
-      <Tooltip position={{ x: -70, y: 90 }} wrapperStyle={0} formatter={formatTooltip}/>
+      <Tooltip
+        position={{ x: -70, y: 90 }}
+        wrapperStyle={0}
+        formatter={formatTooltip}
+      />
     </PieChart>
   );
 }
@@ -301,23 +314,28 @@ function SessionsToday() {
 }
 
 function MinutesToday() {
-    const [productivePercentage, setProductivePercentageTodayCount] = useState('');
+  const [productivePercentage, setProductivePercentageTodayCount] = useState(
+    ''
+  );
 
-    useEffect(() => {
-        productivityPercentageTodayOutcome().then(result => {
-        setProductivePercentageTodayCount(result);
-      })});
+  sessionsCompletePastSeven();
+
+  useEffect(() => {
+    productivityPercentageTodayOutcome().then(result => {
+      setProductivePercentageTodayCount(result);
+    });
+  });
 
   return (
     <div className="dashBox" id="minutesToday">
       <div id="minutesTodayInfo">
-      {!productivePercentage ? (
+        {!productivePercentage ? (
           <>
             <p>No completed sessions yet today</p>
           </>
         ) : (
           <>
-            <h4>{(productivePercentage * 100).toFixed(0) + "%"}</h4>
+            <h4>{(productivePercentage * 100).toFixed(0) + '%'}</h4>
             <p>Productive</p>
           </>
         )}

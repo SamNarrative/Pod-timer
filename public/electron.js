@@ -57,7 +57,6 @@ ipcMain.on('minimize', () => {
 });
 
 ipcMain.on('openInfo', () => {
-
   openModal();
 });
 
@@ -76,7 +75,6 @@ function openModal() {
       nodeIntegration: true,
       webSecurity: false,
     },
-    
 
     modal: true,
     show: false,

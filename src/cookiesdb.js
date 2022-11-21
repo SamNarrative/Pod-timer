@@ -176,15 +176,32 @@ export async function sessionsCompletePastSeven() {
         return [feelingScoreToString[feeling[0]], feeling[1].length];
       })
     );
-    console.log('day', groupedArrayScoreSummarised);
     const resultObject = {
       name: day[0],
       ...groupedArrayScoreSummarised,
     };
+    
     return resultObject;
   });
 
-  return feelingScoreArray;
+  const arrayOfDates = []; 
+  let rollingDay = epochWeekAgo + 86400000;
+  while (rollingDay <= epochDate) {
+    arrayOfDates.push(convertToCurrentDateTZ(rollingDay));
+    rollingDay = rollingDay + 86400000;
+}
+  for (let i = 0; i < arrayOfDates.length; i++) {
+     const filteredArray = feelingScoreArray.filter(day => day.name === arrayOfDates[i] ); 
+     if (filteredArray.length === 0) {
+      feelingScoreArray.push({name: arrayOfDates[i]})
+     }
+  } 
+
+  const sortedFeelingScoreArray = feelingScoreArray.sort(function(a,b){
+    return new Date(a.name) - new Date(b.name);
+  });
+
+  return sortedFeelingScoreArray;
 }
 
 export async function productivityPercentageTodayObject() {

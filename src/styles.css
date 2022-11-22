@@ -291,15 +291,39 @@ li {
 
 #dashHeader {
   -webkit-app-region: drag;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  
 }
 
-#dashHeader > h1 {
+#refreshButton {
+  justify-self: end;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+#refreshButton:hover {
+  background-color: rgba(174, 174, 174, 0.3);
+  justify-self: end;
+  border-radius: 5px;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#dashHeader > div > h1 {
   font-size: 55px;
   margin: 0px;
   font-weight: 400;
 }
 
-#dashHeader > h4 {
+#dashHeader > div > h4 {
   font-size: 15px;
   margin: 0px 4px;
   font-weight: 800;

@@ -44,7 +44,6 @@ function Example() {
           left: 20,
           bottom: 20,
         }}
-       
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -59,11 +58,36 @@ function Example() {
         <YAxis />
         <Tooltip position={{ x: -40, y: 90 }} />
 
-        <Bar dataKey="Very Poor" stackId="a" fill="#EE6055"  isAnimationActive={false} />
-        <Bar dataKey="Poor" stackId="a" fill="#F1A373"  isAnimationActive={false} />
-        <Bar dataKey="Okay" stackId="a" fill="#FFD97D"  isAnimationActive={false} />
-        <Bar dataKey="Good" stackId="a" fill="#9ee2a0"   isAnimationActive={false}/>
-        <Bar dataKey="Very Good" stackId="a" fill="#60D394"   isAnimationActive={false}/>
+        <Bar
+          dataKey="Very Poor"
+          stackId="a"
+          fill="#EE6055"
+          isAnimationActive={false}
+        />
+        <Bar
+          dataKey="Poor"
+          stackId="a"
+          fill="#F1A373"
+          isAnimationActive={false}
+        />
+        <Bar
+          dataKey="Okay"
+          stackId="a"
+          fill="#FFD97D"
+          isAnimationActive={false}
+        />
+        <Bar
+          dataKey="Good"
+          stackId="a"
+          fill="#9ee2a0"
+          isAnimationActive={false}
+        />
+        <Bar
+          dataKey="Very Good"
+          stackId="a"
+          fill="#60D394"
+          isAnimationActive={false}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -137,7 +161,8 @@ function TodayProductivityPie() {
         outerRadius={40}
         fill="#8884d8"
         paddingAngle={2}
-        dataKey="value" isAnimationActive={false}
+        dataKey="value"
+        isAnimationActive={false}
       >
         {!data
           ? null
@@ -217,12 +242,28 @@ function Navbar({ openSection, setOpenSection }) {
 }
 
 function Dashboard() {
+  function refreshPage() {
+    window.location.reload(false);
+  }
+
   productivityPercentageTodayObject();
   return (
     <div id="dashboard">
       <section id="dashHeader">
-        <h1>Dashboard</h1>
-        <h4>WELCOME BACK</h4>
+        <div>
+          <h1>Dashboard</h1>
+          <h4>WELCOME BACK</h4>
+        </div>
+        <div id="refreshButton" onClick={() => refreshPage()}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="-1.5 -2.5 24 24"
+            width="24"
+            fill="currentColor"
+          >
+            <path d="M4.859 5.308l1.594-.488a1 1 0 0 1 .585 1.913l-3.825 1.17a1 1 0 0 1-1.249-.665L.794 3.413a1 1 0 1 1 1.913-.585l.44 1.441C5.555.56 10.332-1.035 14.573.703a9.381 9.381 0 0 1 5.38 5.831 1 1 0 1 1-1.905.608A7.381 7.381 0 0 0 4.86 5.308zm12.327 8.195l-1.775.443a1 1 0 1 1-.484-1.94l3.643-.909a.997.997 0 0 1 .61-.08 1 1 0 0 1 .84.75l.968 3.88a1 1 0 0 1-1.94.484l-.33-1.322a9.381 9.381 0 0 1-16.384-1.796l-.26-.634a1 1 0 1 1 1.851-.758l.26.633a7.381 7.381 0 0 0 13.001 1.25z"></path>
+          </svg>
+        </div>
       </section>
       <DashboardToday />
       <OverallStats />

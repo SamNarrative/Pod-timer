@@ -33,7 +33,7 @@ function Example() {
   }, []);
 
   return (
-    <ResponsiveContainer width="100%" height="80%" maxHeight="100%">
+    <ResponsiveContainer width="100%" height="90%" maxHeight="100%">
       <BarChart
         width={500}
         height={250}
@@ -44,27 +44,46 @@ function Example() {
           left: 20,
           bottom: 20,
         }}
+       
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" angle={-70} textAnchor="end" interval={0} height={90}>
+        <XAxis
+          dataKey="name"
+          angle={-70}
+          textAnchor="end"
+          interval={0}
+          height={90}
+        >
           <Label value="Date" offset={0} position="bottom" />
-        </XAxis >
+        </XAxis>
         <YAxis />
         <Tooltip position={{ x: -40, y: 90 }} />
 
-        <Bar dataKey="Very Poor" stackId="a" fill="#EE6055" />
-        <Bar dataKey="Poor" stackId="a" fill="#F1A373" />
-        <Bar dataKey="Okay" stackId="a" fill="#FFD97D" />
-        <Bar dataKey="Good" stackId="a" fill="#9ee2a0" />
-        <Bar dataKey="Very Good" stackId="a" fill="#60D394" />
+        <Bar dataKey="Very Poor" stackId="a" fill="#EE6055"  isAnimationActive={false} />
+        <Bar dataKey="Poor" stackId="a" fill="#F1A373"  isAnimationActive={false} />
+        <Bar dataKey="Okay" stackId="a" fill="#FFD97D"  isAnimationActive={false} />
+        <Bar dataKey="Good" stackId="a" fill="#9ee2a0"   isAnimationActive={false}/>
+        <Bar dataKey="Very Good" stackId="a" fill="#60D394"   isAnimationActive={false}/>
       </BarChart>
     </ResponsiveContainer>
   );
 }
 
+const COLORS = {
+  'Very Poor Sessions': '#EE6055',
+  'Poor Sessions': '#F1A373',
+  'Okay Sessions': '#FFD97D',
+  'Good Sessions': '#9ee2a0',
+  'Very Good Sessions': '#60D394',
+};
 
-const COLORS = ['#EE6055', '#F1A373', '#FFD97D', '#9ee2a0', "#60D394" ];
+const PRODCOLORS = {
+  'Low Productivity': '#EE6055',
 
+  'Medium Productivity': '#FFD97D',
+
+  'High Productivity': '#60D394',
+};
 function TodaySessionsPie() {
   const [data, setData] = useState(null);
 
@@ -84,14 +103,12 @@ function TodaySessionsPie() {
         fill="#8884d8"
         paddingAngle={2}
         dataKey="value"
+        isAnimationActive={false}
       >
         {!data
           ? null
           : data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
+              <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
             ))}
       </Pie>
       <Tooltip position={{ x: -40, y: 90 }} />
@@ -120,15 +137,12 @@ function TodayProductivityPie() {
         outerRadius={40}
         fill="#8884d8"
         paddingAngle={2}
-        dataKey="value"
+        dataKey="value" isAnimationActive={false}
       >
         {!data
           ? null
           : data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
+              <Cell key={`cell-${index}`} fill={PRODCOLORS[entry.name]} />
             ))}
       </Pie>
       <Tooltip

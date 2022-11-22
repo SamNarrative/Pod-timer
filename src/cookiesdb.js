@@ -201,7 +201,13 @@ export async function sessionsCompletePastSeven() {
     return new Date(a.name) - new Date(b.name);
   });
 
-  return sortedFeelingScoreArray;
+
+  const formattedFeelingScoreArray = sortedFeelingScoreArray.map(entry => {
+    entry.name =  moment(entry.name).format("Do MMM")
+    return entry
+  })
+
+  return formattedFeelingScoreArray;
 }
 
 export async function productivityPercentageTodayObject() {

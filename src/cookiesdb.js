@@ -47,7 +47,9 @@ db.version(2).stores({
   updated_at,
   completed_at,
   runId,
-  feelingScore`,
+  feelingScore,
+  periodLength`,
+
 });
 
 export function getSetRunId() {
@@ -60,7 +62,7 @@ export function getSetRunId() {
   return runId;
 }
 
-export default function createNewPeriod(id, type, runId) {
+export default function createNewPeriod(id, type, runId, periodLength) {
   const newPeriod = {
     id: id,
     feelingScore: 0,
@@ -70,6 +72,7 @@ export default function createNewPeriod(id, type, runId) {
     updated_at: Date.now(),
     completed_at: null,
     runId: runId,
+    periodLength: periodLength, 
   };
 
   db.periods.put(newPeriod);
@@ -165,15 +168,24 @@ export async function sessionsCompletePastSeven() {
     return {
       day: convertToCurrentDateTZ(result.inserted_at),
       feelingScore: result.feelingScore,
+      periodLength: result.periodLength, 
     };
   });
 
   const groupedDaysArray = Object.entries(groupBy(resultToDay, 'day'));
+  console.log(groupedDaysArray);
   const feelingScoreArray = groupedDaysArray.map(day => {
     const groupedArray = Object.entries(groupBy(day[1], 'feelingScore'));
+    console.log(groupedArray);
     const groupedArrayScoreSummarised = Object.fromEntries(
       groupedArray.map(feeling => {
-        return [feelingScoreToString[feeling[0]], feeling[1].length];
+        console.log('feeling', feeling)
+        return [feelingScoreToString[feeling[0]], feeling[1].reduce(    (previousValue, currentValue) => previousValue + currentValue.periodLength/60,
+        0)
+      
+      
+      
+      ];
       })
     );
     const resultObject = {

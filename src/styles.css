@@ -65,6 +65,16 @@
     radial-gradient(at 84% 38%, hsla(35, 78%, 77%, 1) 0px, transparent 50%);
 }
 
+#session.break {
+  color: #ffffff;
+  background-color:hsla(240,27%,23%,0.85);
+  background-image:
+  radial-gradient(at 79% 87%, hsla(206,32%,60%,0.74) 0px, transparent 50%),
+  radial-gradient(at 15% 85%, hsla(240,60%,73%,0.76) 0px, transparent 50%),
+  radial-gradient(at 21% 16%, hsla(344,38%,56%,0.81) 0px, transparent 50%),
+  radial-gradient(at 87% 23%, hsla(130,94%,73%,0.61) 0px, transparent 50%);
+}
+
 #session.finishing {
   animation: changeColour 1s forwards;
 }
@@ -112,6 +122,9 @@
   margin: 10px 20px;
 }
 
+#sessionTimerButtons > svg {
+  outline:0;
+}
 .show {
   animation: fadein 0.25s;
 }

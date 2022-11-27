@@ -7,7 +7,11 @@ function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 350,
-    height: 220,
+    height: 250,
+    minHeight: 250,
+    maxHeight: 250,
+    maxWidth: 350,
+    minWidth: 350,
     transparent: true,
     frame: false,
     webPreferences: {
@@ -57,7 +61,16 @@ ipcMain.on('minimize', () => {
 });
 
 ipcMain.on('openInfo', () => {
-  openModal();
+  const windows = BrowserWindow.getAllWindows(); 
+
+  if (windows.length < 2 ) {
+    openModal();
+  }
+  else {
+    windows[0].show();
+  }
+
+  
 });
 
 function openModal() {

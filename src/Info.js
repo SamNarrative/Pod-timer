@@ -22,6 +22,8 @@ import {
   productivityPercentageTodayOutcome,
   sessionsCompletePastSeven,
 } from './cookiesdb';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 function Example() {
   const [data, setData] = useState(null);
@@ -206,6 +208,7 @@ function Navbar({ openSection, setOpenSection }) {
             }
             onClick={() => setOpenSection('graph')}
           >
+            <Tippy content="Dashboard" placement='right' delay='300'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="-5 -4 24 24"
@@ -214,6 +217,7 @@ function Navbar({ openSection, setOpenSection }) {
             >
               <path d="M1 0a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V1a1 1 0 0 1 1-1zm12 4a1 1 0 0 1 1 1v10a1 1 0 0 1-2 0V5a1 1 0 0 1 1-1zM7 8a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"></path>
             </svg>
+            </Tippy>
           </div>
         </li>
 
@@ -226,14 +230,17 @@ function Navbar({ openSection, setOpenSection }) {
             }
             onClick={() => setOpenSection('settings')}
           >
+            <Tippy content="Settings" placement='right' delay='300'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="-2 -2 24 24"
               width="24"
               fill="currentColor"
             >
+              
               <path d="M20 8.163A2.106 2.106 0 0 0 18.926 10c0 .789.433 1.476 1.074 1.837l-.717 2.406a2.105 2.105 0 0 0-2.218 3.058l-2.062 1.602A2.104 2.104 0 0 0 11.633 20l-3.29-.008a2.104 2.104 0 0 0-3.362-1.094l-2.06-1.615A2.105 2.105 0 0 0 .715 14.24L0 11.825A2.106 2.106 0 0 0 1.051 10C1.051 9.22.63 8.54 0 8.175L.715 5.76a2.105 2.105 0 0 0 2.207-3.043L4.98 1.102A2.104 2.104 0 0 0 8.342.008L11.634 0a2.104 2.104 0 0 0 3.37 1.097L17.064 2.7a2.105 2.105 0 0 0 2.218 3.058L20 8.162zM10 14a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path>
             </svg>
+            </Tippy>
           </div>
         </li>
       </ul>
@@ -255,6 +262,7 @@ function Dashboard() {
           <h4>WELCOME BACK</h4>
         </div>
         <div id="refreshButton" onClick={() => refreshPage()}>
+        <Tippy content="Refresh Dashboard" placement='bottom' delay='300'>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="-1.5 -2.5 24 24"
@@ -263,6 +271,7 @@ function Dashboard() {
           >
             <path d="M4.859 5.308l1.594-.488a1 1 0 0 1 .585 1.913l-3.825 1.17a1 1 0 0 1-1.249-.665L.794 3.413a1 1 0 1 1 1.913-.585l.44 1.441C5.555.56 10.332-1.035 14.573.703a9.381 9.381 0 0 1 5.38 5.831 1 1 0 1 1-1.905.608A7.381 7.381 0 0 0 4.86 5.308zm12.327 8.195l-1.775.443a1 1 0 1 1-.484-1.94l3.643-.909a.997.997 0 0 1 .61-.08 1 1 0 0 1 .84.75l.968 3.88a1 1 0 0 1-1.94.484l-.33-1.322a9.381 9.381 0 0 1-16.384-1.796l-.26-.634a1 1 0 1 1 1.851-.758l.26.633a7.381 7.381 0 0 0 13.001 1.25z"></path>
           </svg>
+          </Tippy>
         </div>
       </section>
       <DashboardToday />

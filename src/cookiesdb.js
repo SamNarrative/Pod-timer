@@ -173,13 +173,10 @@ export async function sessionsCompletePastSeven() {
   });
 
   const groupedDaysArray = Object.entries(groupBy(resultToDay, 'day'));
-  console.log(groupedDaysArray);
   const feelingScoreArray = groupedDaysArray.map(day => {
     const groupedArray = Object.entries(groupBy(day[1], 'feelingScore'));
-    console.log(groupedArray);
     const groupedArrayScoreSummarised = Object.fromEntries(
       groupedArray.map(feeling => {
-        console.log('feeling', feeling)
         return [feelingScoreToString[feeling[0]], feeling[1].reduce(    (previousValue, currentValue) => previousValue + currentValue.periodLength/60,
         0)
       

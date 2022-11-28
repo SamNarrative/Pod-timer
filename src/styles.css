@@ -134,6 +134,10 @@
   animation: fadeout 0.25s;
 }
 
+svg {
+  outline:0;
+}
+
 .timerButton {
   transform: scale(1.5);
   margin: 10px;

@@ -1,7 +1,6 @@
 import './styles.css';
-import React, { PureComponent } from 'react';
-import { useEffect, useState, useRef } from 'react';
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import {
   BarChart,
   Bar,
@@ -9,7 +8,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   Label,
 } from 'recharts';
 
@@ -204,7 +202,7 @@ function Navbar({ openSection, setOpenSection }) {
         <li>
           <div
             className={
-              openSection != 'graph' ? 'buttonOutline' : 'buttonOutlineSelected'
+              openSection !== 'graph' ? 'buttonOutline' : 'buttonOutlineSelected'
             }
             onClick={() => setOpenSection('graph')}
           >
@@ -224,7 +222,7 @@ function Navbar({ openSection, setOpenSection }) {
         <li>
           <div
             className={
-              openSection != 'settings'
+              openSection !== 'settings'
                 ? 'buttonOutline'
                 : 'buttonOutlineSelected'
             }

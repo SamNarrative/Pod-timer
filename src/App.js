@@ -463,7 +463,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Very Poor')}
           onClick={() => handleFeelingFeedbackComplete(1)}
         >
-          <span role="img">😭</span>
+          <span role="img" aria-label="Very Sad" >😭</span>
         </div>
         <div
           className="feeling"
@@ -471,7 +471,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Poor')}
           onClick={() => handleFeelingFeedbackComplete(2)}
         >
-          <span role="img">🙁</span>
+          <span role="img" aria-label="Sad" >🙁</span>
         </div>
         <div
           className="feeling"
@@ -479,7 +479,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Okay')}
           onClick={() => handleFeelingFeedbackComplete(3)}
         >
-          <span role="img">😐</span>
+          <span role="img" aria-label="Fine"  >😐</span>
         </div>
         <div
           className="feeling"
@@ -487,7 +487,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Good')}
           onClick={() => handleFeelingFeedbackComplete(4)}
         >
-          <span role="img">😃</span>
+          <span role="img" aria-label="Happy" >😃</span>
         </div>
         <div
           className="feeling"
@@ -495,7 +495,7 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Very Good')}
           onClick={() => handleFeelingFeedbackComplete(5)}
         >
-          <span role="img">🤩</span>
+          <span role="img" aria-label="Very Happy" >🤩</span>
         </div>
       </div>
       <p id="feelinghoverrtext">{hoverfeeling}</p>

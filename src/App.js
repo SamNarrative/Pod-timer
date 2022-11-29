@@ -11,6 +11,10 @@ import createNewPeriod, {
 import { v4 as uuidv4 } from 'uuid';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import { useSelector, useDispatch } from 'react-redux'
+import { sessionDecrement, sessionIncrement } from './sessionLenghtSlice'
+import { breakDecrement, breakIncrement } from './breakLenghtSlice'
+
 
 const { ipcRenderer } = window.require('electron');
 moment().format();
@@ -224,27 +228,13 @@ function ClockWrapper() {
         session={session}
       />
 
-      {/* <div id="lengthControls"> */}
-      {/* <Control
-          title="session length"
-          id="session"
-          time={sessionLengthTime}
-          handleLengthChange={handleLengthChange}
-          type="session"
-        />
-        <Control
-          title="break length"
-          id="break"
-          time={breakLengthTime}
-          handleLengthChange={handleLengthChange}
-          type="break"
-        /> */}
+   
       <audio
         preload="auto"
         id="beep"
         src="file:///Users/samroberts/Code/Untitled/Pod timer/Pod-timer/src/audio.wav"
       ></audio>
-      {/* </div> */}
+
     </div>
   );
 }
@@ -260,6 +250,9 @@ function Session({
   runId,
   periodCount,
 }) {
+
+  const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   return (
     <div
       id="session"
@@ -288,7 +281,7 @@ function Session({
             {'end at: ' +
               moment
                 .unix(Math.round(finishEpoc / 1000))
-                .tz('Pacific/Auckland')
+                .tz(clientTZ)
                 .format('h:mma')}
           </p>
         ) : (
@@ -415,13 +408,16 @@ function SessionButtons({
   );
 }
 
-function Control({ title, time, handleLengthChange, type }) {
+export function SessionControl({ title, time, handleLengthChange, type }) {
   function formatTime(time) {
     const newTime = time;
     const minutes = Math.floor(newTime / 60);
     const seconds = newTime - minutes * 60;
     return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
   }
+
+  const sessionLength = useSelector((state) => state.sessionLength.value)
+  const dispatch = useDispatch()
 
   return (
     <div className="control">
@@ -432,17 +428,57 @@ function Control({ title, time, handleLengthChange, type }) {
           viewBox="-2 -2 24 24"
           width="24"
           fill="currentColor"
-          onClick={() => handleLengthChange(false, type)}
+          onClick={() => dispatch(sessionDecrement())}
         >
           <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0 2C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zM5 9h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2z"></path>
         </svg>
-        <p>{formatTime(time)}</p>
+        <p>{formatTime(sessionLength)}</p>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="-2 -2 24 24"
           width="24"
           fill="currentColor"
-          onClick={() => handleLengthChange(true, type)}
+          onClick={() => dispatch(sessionIncrement())}
+        >
+          <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm1-7v4a1 1 0 0 1-2 0v-4H5a1 1 0 0 1 0-2h4V5a1 1 0 1 1 2 0v4h4a1 1 0 0 1 0 2h-4z"></path>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+
+export function BreakControl({ title, time, handleLengthChange, type }) {
+  function formatTime(time) {
+    const newTime = time;
+    const minutes = Math.floor(newTime / 60);
+    const seconds = newTime - minutes * 60;
+    return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
+  }
+
+  const breakLength = useSelector((state) => state.breakLength.value)
+  const dispatch = useDispatch()
+
+  return (
+    <div className="control">
+      {title}
+      <div className="controlAspects">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="-2 -2 24 24"
+          width="24"
+          fill="currentColor"
+          onClick={() => dispatch(breakDecrement())}
+        >
+          <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0 2C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zM5 9h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2z"></path>
+        </svg>
+        <p>{formatTime(breakLength)}</p>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="-2 -2 24 24"
+          width="24"
+          fill="currentColor"
+          onClick={() => dispatch(breakIncrement())}
         >
           <path d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm1-7v4a1 1 0 0 1-2 0v-4H5a1 1 0 0 1 0-2h4V5a1 1 0 1 1 2 0v4h4a1 1 0 0 1 0 2h-4z"></path>
         </svg>

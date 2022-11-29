@@ -10,6 +10,8 @@ import {
   Tooltip,
   Label,
 } from 'recharts';
+import {SessionControl, BreakControl} from './App.js';
+
 
 import moment from 'moment';
 import 'moment-timezone';
@@ -189,7 +191,7 @@ export default function Info() {
         <Navbar openSection={openSection} setOpenSection={setOpenSection} />
       </header>
       <main id="infomain">
-        {openSection === 'graph' ? <Dashboard /> : 'sd'}
+        {openSection === 'graph' ? <Dashboard /> : <Settings/>}
       </main>
     </div>
   );
@@ -246,6 +248,40 @@ function Navbar({ openSection, setOpenSection }) {
   );
 }
 
+function Settings() {
+  return (
+    <div id="settings">
+    <section id="settingsHeader">
+      <div>
+        <h1>Settings</h1>
+      </div>
+    </section>
+    <PeriodLenghts /> 
+    </div>
+  );
+}
+
+function PeriodLenghts() {
+  return(
+    <div>
+      <h2>Period Lengths</h2>
+         <div id="lengthControls">
+      <SessionControl
+          title="session length"
+          id="session"
+          type="session"
+        />
+        <BreakControl
+          title="break length"
+          id="break"
+          type="break"
+        />
+              </div>
+
+    </div>
+  ) 
+}
+
 function Dashboard() {
   function refreshPage() {
     window.location.reload(false);
@@ -279,6 +315,8 @@ function Dashboard() {
 }
 
 function DashboardToday() {
+
+  const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return (
     <section className="dashBox" id="today">
       <div id="todayText">
@@ -286,7 +324,7 @@ function DashboardToday() {
         <p>
           {moment
             .unix(Math.round(Date.now() / 1000))
-            .tz('Pacific/Auckland')
+            .tz(clientTZ)
             .format('DD MMM YY')}
         </p>
       </div>

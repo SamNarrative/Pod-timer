@@ -321,6 +321,20 @@ li {
   
 }
 
+#settings {
+  margin: 0 4vw 0 18vw;
+  width: 90vw;
+  user-select: none;
+  height: 675px;
+}
+
+#settingsHeader {
+  -webkit-app-region: drag;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  
+}
+
 #refreshButton {
   justify-self: end;
   width: 2rem;
@@ -340,6 +354,19 @@ li {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+#settingsHeader > div > h1 {
+  font-size: 55px;
+  margin: 0px;
+  font-weight: 400;
+}
+
+#settingsHeader > div > h4 {
+  font-size: 15px;
+  margin: 0px 4px;
+  font-weight: 800;
+  color: #595e77;
 }
 
 #dashHeader > div > h1 {

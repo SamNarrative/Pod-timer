@@ -6,8 +6,16 @@ import Info from './Info';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './app/store';
+import { initMessageListener } from 'redux-state-sync';
+import { Client as Styletron } from 'styletron-engine-atomic';
+import { Provider as StyletronProvider } from 'styletron-react';
+import { LightTheme, BaseProvider, styled } from 'baseui';
+
+
+const engine = new Styletron();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+initMessageListener(store);
 
 const path = window.location.href.substring(
   window.location.href.lastIndexOf('/') + 1
@@ -16,7 +24,11 @@ const path = window.location.href.substring(
 if (path === 'main') {
   root.render(
     <Provider store={store}>
+         <StyletronProvider value={engine}>
+      <BaseProvider theme={LightTheme}>
       <App />
+      </BaseProvider>
+      </StyletronProvider>
     </Provider>
   );
   reportWebVitals();
@@ -25,7 +37,11 @@ if (path === 'main') {
 if (path === 'info') {
   root.render(
     <Provider store={store}>
+                <StyletronProvider value={engine}>
+      <BaseProvider theme={LightTheme}>
       <Info />
+      </BaseProvider>
+      </StyletronProvider>
     </Provider>
   );
   reportWebVitals();

@@ -2,6 +2,11 @@ const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 const { ipcMain } = require('electron');
+const {
+  default: installExtension,
+  REDUX_DEVTOOLS,
+  REACT_DEVELOPER_TOOLS
+} = require("electron-devtools-installer");
 
 function createWindow() {
   // Create the browser window.
@@ -17,6 +22,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
+      enableRemoteModule: true,
     },
   });
 
@@ -29,7 +35,18 @@ function createWindow() {
     isDev
       ? 'http://localhost:3000/main'
       : `file://${path.join(__dirname, '../build/index.html')}`
+
+
   );
+
+  win.webContents.once("dom-ready", async () => {
+    await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log("An error occurred: ", err))
+        .finally(() => {
+            // win.webContents.openDevTools();
+        });
+});
 }
 
 // This method will be called when Electron has finished

@@ -11,10 +11,9 @@ import createNewPeriod, {
 import { v4 as uuidv4 } from 'uuid';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { useSelector, useDispatch } from 'react-redux'
-import { sessionDecrement, sessionIncrement } from './sessionLenghtSlice'
-import { breakDecrement, breakIncrement } from './breakLenghtSlice'
-
+import { useSelector, useDispatch } from 'react-redux';
+import { sessionDecrement, sessionIncrement } from './sessionLenghtSlice';
+import { breakDecrement, breakIncrement } from './breakLenghtSlice';
 
 const { ipcRenderer } = window.require('electron');
 moment().format();
@@ -28,7 +27,9 @@ export default function App() {
 }
 
 function ClockWrapper() {
-  const [time, setTime] = useState(1500);
+  const [time, setTime] = useState(
+    useSelector(state => state.sessionLength.value)
+  );
   const [timerActive, setTimerActive] = useState(false);
   const [sessionLengthTime, setSessionLengthTime] = useState(time);
   const [breakLengthTime, setBreakLengthTime] = useState(300);
@@ -40,6 +41,24 @@ function ClockWrapper() {
   const [periodId, setPeriodId] = useState(null);
   const [periodCount, setPeriodCount] = useState(1);
   const runId = getSetRunId();
+
+  const sessionLength = useSelector(state => state.sessionLength.value);
+  const breakLength = useSelector(state => state.breakLength.value);
+
+  console.log(sessionLengthTime);
+
+  useEffect(() => {
+    setSessionLengthTime(sessionLength);
+    setBreakLengthTime(breakLength);
+
+    if (!timerActive && session) {
+      setTime(sessionLength);
+    }
+
+    if (!timerActive && !session) {
+      setTime(sessionLength);
+    }
+  }, [sessionLength, breakLength]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,7 +96,7 @@ function ClockWrapper() {
   }
 
   function handleResetClick() {
-    session ? setTime(sessionLengthTime) : setTime(breakLengthTime);
+    session ? setTime(sessionLength) : setTime(breakLengthTime);
     setTimerActive(false);
   }
 
@@ -87,40 +106,6 @@ function ClockWrapper() {
 
   function handleMinimse() {
     ipcRenderer.send('minimize');
-  }
-
-  function handleLengthChange(increase, type) {
-    if (type === 'session') {
-      if (sessionLengthTime <= 60 && !increase) {
-        return;
-      }
-      if (increase) {
-        if (!timerActive && session) {
-          setTime(sessionLengthTime + 60);
-        }
-        setSessionLengthTime(sessionLengthTime + 60);
-      } else {
-        if (!timerActive && session) {
-          setTime(sessionLengthTime - 60);
-        }
-        setSessionLengthTime(sessionLengthTime - 60);
-      }
-    } else {
-      if (breakLengthTime <= 60 && !increase) {
-        return;
-      }
-      if (increase) {
-        if (!timerActive && !session) {
-          setTime(breakLengthTime + 60);
-        }
-        setBreakLengthTime(breakLengthTime + 60);
-      } else {
-        if (!timerActive && !session) {
-          setTime(breakLengthTime - 60);
-        }
-        setBreakLengthTime(breakLengthTime - 60);
-      }
-    }
   }
 
   function handleSkipToNext() {
@@ -228,13 +213,11 @@ function ClockWrapper() {
         session={session}
       />
 
-   
       <audio
         preload="auto"
         id="beep"
         src="file:///Users/samroberts/Code/Untitled/Pod timer/Pod-timer/src/audio.wav"
       ></audio>
-
     </div>
   );
 }
@@ -250,7 +233,6 @@ function Session({
   runId,
   periodCount,
 }) {
-
   const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
@@ -416,8 +398,8 @@ export function SessionControl({ title, time, handleLengthChange, type }) {
     return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
   }
 
-  const sessionLength = useSelector((state) => state.sessionLength.value)
-  const dispatch = useDispatch()
+  const sessionLength = useSelector(state => state.sessionLength.value);
+  const dispatch = useDispatch();
 
   return (
     <div className="control">
@@ -447,7 +429,6 @@ export function SessionControl({ title, time, handleLengthChange, type }) {
   );
 }
 
-
 export function BreakControl({ title, time, handleLengthChange, type }) {
   function formatTime(time) {
     const newTime = time;
@@ -456,8 +437,8 @@ export function BreakControl({ title, time, handleLengthChange, type }) {
     return seconds < 10 ? minutes + ':0' + seconds : minutes + ':' + seconds;
   }
 
-  const breakLength = useSelector((state) => state.breakLength.value)
-  const dispatch = useDispatch()
+  const breakLength = useSelector(state => state.breakLength.value);
+  const dispatch = useDispatch();
 
   return (
     <div className="control">
@@ -499,7 +480,9 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Very Poor')}
           onClick={() => handleFeelingFeedbackComplete(1)}
         >
-          <span role="img" aria-label="Very Sad" >😭</span>
+          <span role="img" aria-label="Very Sad">
+            😭
+          </span>
         </div>
         <div
           className="feeling"
@@ -507,7 +490,9 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Poor')}
           onClick={() => handleFeelingFeedbackComplete(2)}
         >
-          <span role="img" aria-label="Sad" >🙁</span>
+          <span role="img" aria-label="Sad">
+            🙁
+          </span>
         </div>
         <div
           className="feeling"
@@ -515,7 +500,9 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Okay')}
           onClick={() => handleFeelingFeedbackComplete(3)}
         >
-          <span role="img" aria-label="Fine"  >😐</span>
+          <span role="img" aria-label="Fine">
+            😐
+          </span>
         </div>
         <div
           className="feeling"
@@ -523,7 +510,9 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Good')}
           onClick={() => handleFeelingFeedbackComplete(4)}
         >
-          <span role="img" aria-label="Happy" >😃</span>
+          <span role="img" aria-label="Happy">
+            😃
+          </span>
         </div>
         <div
           className="feeling"
@@ -531,7 +520,9 @@ function ProductivityFeeling({ handleFeelingFeedbackComplete }) {
           onMouseEnter={() => setHoverfeeling('Very Good')}
           onClick={() => handleFeelingFeedbackComplete(5)}
         >
-          <span role="img" aria-label="Very Happy" >🤩</span>
+          <span role="img" aria-label="Very Happy">
+            🤩
+          </span>
         </div>
       </div>
       <p id="feelinghoverrtext">{hoverfeeling}</p>

@@ -19,11 +19,14 @@ export const sessionLengthSlice = createSlice({
       incrementByAmount: (state, action) => {
         state.value += action.payload
       },
+      returnState: (state) => {
+        return state.value
+      },
     },
   })
   
   // Action creators are generated for each case reducer function
-  export const { sessionIncrement, sessionDecrement, incrementByAmount } = sessionLengthSlice.actions
+  export const { sessionIncrement, sessionDecrement, incrementByAmount, returnState} = sessionLengthSlice.actions
   
   export default sessionLengthSlice.reducer
 

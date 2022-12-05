@@ -44,6 +44,7 @@ function ClockWrapper() {
 
   const sessionLength = useSelector(state => state.sessionLength.value);
   const breakLength = useSelector(state => state.breakLength.value);
+  const skipBreak = useSelector(state => state.skipBreak.value);
 
   console.log(sessionLengthTime);
 
@@ -119,12 +120,16 @@ function ClockWrapper() {
   function handleFeelingFeedbackComplete(feeling) {
     completePeriod(periodId, feeling);
 
-    setSession(!session);
-    session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
-    session
-      ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
-      : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
-
+    if (!skipBreak) {
+      setSession(!session);
+      session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
+      session
+        ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
+        : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+    } else {
+      setTime(sessionLengthTime);
+      setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+    }
     setTimerActive(true);
   }
 
@@ -141,13 +146,18 @@ function ClockWrapper() {
       if (session) {
         setTimerActive(false);
       } else {
-        setSession(!session);
-        session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
-        session
-          ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
-          : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+        if (!skipBreak) {
+          setSession(!session);
+          session ? setTime(breakLengthTime) : setTime(sessionLengthTime);
+          session
+            ? setFinishEpoc(Date.now() + breakLengthTime * 1000)
+            : setFinishEpoc(Date.now() + sessionLengthTime * 1000);
 
-        setTimerActive(true);
+          setTimerActive(true);
+        } else {
+          setTime(sessionLengthTime);
+          setFinishEpoc(Date.now() + sessionLengthTime * 1000);
+        }
       }
 
       beep.play();

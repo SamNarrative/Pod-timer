@@ -65,18 +65,21 @@
     ),
     radial-gradient(at 43% 9%, hsla(19, 64%, 68%, 0.55) 0px, transparent 50%),
     radial-gradient(at 73% 68%, hsla(352, 86%, 71%, 0.55) 0px, transparent 50%),
-    radial-gradient(at 14% 5%, hsla(216, 62%, 63%,0.55) 0px, transparent 50%),
+    radial-gradient(at 14% 5%, hsla(216, 62%, 63%, 0.55) 0px, transparent 50%),
     radial-gradient(at 84% 38%, hsla(35, 78%, 77%, 0.55) 0px, transparent 50%);
 }
 
 #session.break {
   color: #ffffff;
-  background-color:hsla(240,27%,23%,0.85);
-  background-image:
-  radial-gradient(at 79% 87%, hsla(206,32%,60%,0.74) 0px, transparent 50%),
-  radial-gradient(at 15% 85%, hsla(240,60%,73%,0.76) 0px, transparent 50%),
-  radial-gradient(at 21% 16%, hsla(344,38%,56%,0.81) 0px, transparent 50%),
-  radial-gradient(at 87% 23%, hsla(130,94%,73%,0.61) 0px, transparent 50%);
+  background-color: hsla(240, 27%, 23%, 0.85);
+  background-image: radial-gradient(
+      at 79% 87%,
+      hsla(206, 32%, 60%, 0.74) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 15% 85%, hsla(240, 60%, 73%, 0.76) 0px, transparent 50%),
+    radial-gradient(at 21% 16%, hsla(344, 38%, 56%, 0.81) 0px, transparent 50%),
+    radial-gradient(at 87% 23%, hsla(130, 94%, 73%, 0.61) 0px, transparent 50%);
 }
 
 #session.break {
@@ -135,7 +138,7 @@
 }
 
 #sessionTimerButtons > svg {
-  outline:0;
+  outline: 0;
 }
 .show {
   animation: fadein 0.25s;
@@ -147,7 +150,7 @@
 }
 
 svg {
-  outline:0;
+  outline: 0;
 }
 
 .timerButton {
@@ -322,7 +325,6 @@ li {
   -webkit-app-region: drag;
   display: grid;
   grid-template-columns: 3fr 1fr;
-  
 }
 
 #settings {
@@ -336,7 +338,6 @@ li {
   -webkit-app-region: drag;
   display: grid;
   grid-template-columns: 3fr 1fr;
-  
 }
 
 #refreshButton {
@@ -390,9 +391,9 @@ li {
   color: #373c54;
 }
 
-#skipBreakWrapper > label  {
-display: grid;
-grid-template-columns: 1fr 1fr;
+#skipBreakWrapper > label {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 #dashHeader > div > h1 {
@@ -516,9 +517,13 @@ grid-template-columns: 1fr 1fr;
         hsla(322, 64%, 74%, 0.55) 0px,
         transparent 50%
       ),
-      radial-gradient(at 43% 9%, hsla(19, 64%, 68%,0.55) 0px, transparent 50%),
-      radial-gradient(at 73% 68%, hsla(352, 86%, 71%,0.55) 0px, transparent 50%),
-      radial-gradient(at 14% 5%, hsla(216, 62%, 63%,0.55) 0px, transparent 50%),
+      radial-gradient(at 43% 9%, hsla(19, 64%, 68%, 0.55) 0px, transparent 50%),
+      radial-gradient(
+        at 73% 68%,
+        hsla(352, 86%, 71%, 0.55) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 14% 5%, hsla(216, 62%, 63%, 0.55) 0px, transparent 50%),
       radial-gradient(at 84% 38%, hsla(35, 78%, 77%, 0.55) 0px, transparent 50%);
   }
 }
@@ -533,30 +538,64 @@ grid-template-columns: 1fr 1fr;
         transparent 50%
       ),
       radial-gradient(at 43% 9%, hsla(19, 64%, 68%, 0.55) 0px, transparent 50%),
-      radial-gradient(at 73% 68%, hsla(352, 86%, 71%, 0.55) 0px, transparent 50%),
+      radial-gradient(
+        at 73% 68%,
+        hsla(352, 86%, 71%, 0.55) 0px,
+        transparent 50%
+      ),
       radial-gradient(at 14% 5%, hsla(216, 62%, 63%, 0.55) 0px, transparent 50%),
-      radial-gradient(at 84% 38%, hsla(35, 78%, 77%,0.55) 0px, transparent 50%);
+      radial-gradient(at 84% 38%, hsla(35, 78%, 77%, 0.55) 0px, transparent 50%);
   }
   to {
     color: #ffffff;
-    background-color:hsla(240,27%,23%,0.85);
-    background-image:
-    radial-gradient(at 79% 87%, hsla(206,32%,60%,0.74) 0px, transparent 50%),
-    radial-gradient(at 15% 85%, hsla(240,60%,73%,0.76) 0px, transparent 50%),
-    radial-gradient(at 21% 16%, hsla(344,38%,56%,0.81) 0px, transparent 50%),
-    radial-gradient(at 87% 23%, hsla(130,94%,73%,0.61) 0px, transparent 50%);
+    background-color: hsla(240, 27%, 23%, 0.85);
+    background-image: radial-gradient(
+        at 79% 87%,
+        hsla(206, 32%, 60%, 0.74) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 15% 85%,
+        hsla(240, 60%, 73%, 0.76) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 21% 16%,
+        hsla(344, 38%, 56%, 0.81) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 87% 23%,
+        hsla(130, 94%, 73%, 0.61) 0px,
+        transparent 50%
+      );
   }
 }
 
 @keyframes changeColourDefault {
   from {
     color: #ffffff;
-    background-color:hsla(240,27%,23%,0.85);
-    background-image:
-    radial-gradient(at 79% 87%, hsla(206,32%,60%,0.74) 0px, transparent 50%),
-    radial-gradient(at 15% 85%, hsla(240,60%,73%,0.76) 0px, transparent 50%),
-    radial-gradient(at 21% 16%, hsla(344,38%,56%,0.81) 0px, transparent 50%),
-    radial-gradient(at 87% 23%, hsla(130,94%,73%,0.61) 0px, transparent 50%);
+    background-color: hsla(240, 27%, 23%, 0.85);
+    background-image: radial-gradient(
+        at 79% 87%,
+        hsla(206, 32%, 60%, 0.74) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 15% 85%,
+        hsla(240, 60%, 73%, 0.76) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 21% 16%,
+        hsla(344, 38%, 56%, 0.81) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 87% 23%,
+        hsla(130, 94%, 73%, 0.61) 0px,
+        transparent 50%
+      );
   }
   to {
     color: #2c2c2c;

@@ -1,31 +1,31 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers } from '@reduxjs/toolkit'
+import { createStateSyncMiddleware } from 'redux-state-sync'
+import { persistReducer, persistStore } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+
 import sessionLengthSliceReducer from '../sessionLenghtSlice'
 import breakLengthSliceReducer from '../breakLenghtSlice'
 import skipBreakSliceReducer from '../skipBreakSlice'
-import { createStateSyncMiddleware } from 'redux-state-sync';
-import { loadState } from '../localStorage';
-import throttle from 'lodash.throttle';
 
-const config = {
-    blacklist: [],
-};
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage,
+}
 
-const persistedState = loadState();
-
-const middlewares = [createStateSyncMiddleware(config)];
-
-export default configureStore({
-  preloadedState: persistedState,
-  reducer: {
-    sessionLength: sessionLengthSliceReducer,
-    breakLength: breakLengthSliceReducer, 
-    skipBreak: skipBreakSliceReducer, 
-  },
-  devTools: true, 
-  middleware : [
-    ...middlewares
-
-  ],
-
+const rootReducer = combineReducers({
+  sessionLength: sessionLengthSliceReducer,
+  breakLength: breakLengthSliceReducer,
+  skipBreak: skipBreakSliceReducer,
 })
 
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+const middlewares = [createStateSyncMiddleware()]
+
+export default configureStore({
+  reducer: persistedReducer,
+  devTools: true,
+  middleware: [...middlewares],
+})

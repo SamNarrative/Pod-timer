@@ -10,13 +10,13 @@ import { initMessageListener } from 'redux-state-sync';
 import { Client as Styletron } from 'styletron-engine-atomic';
 import { Provider as StyletronProvider } from 'styletron-react';
 import { LightTheme, BaseProvider, styled } from 'baseui';
-
+import { PersistGate } from 'redux-persist/lib/integration/react';
+import { persistStore, persistReducer } from 'redux-persist';
 
 const engine = new Styletron();
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 initMessageListener(store);
-
+let persistor = persistStore(store);
 const path = window.location.href.substring(
   window.location.href.lastIndexOf('/') + 1
 );
@@ -24,11 +24,13 @@ const path = window.location.href.substring(
 if (path === 'main') {
   root.render(
     <Provider store={store}>
-         <StyletronProvider value={engine}>
-      <BaseProvider theme={LightTheme}>
-      <App />
-      </BaseProvider>
-      </StyletronProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <StyletronProvider value={engine}>
+          <BaseProvider theme={LightTheme}>
+            <App />
+          </BaseProvider>
+        </StyletronProvider>
+      </PersistGate>
     </Provider>
   );
   reportWebVitals();
@@ -37,15 +39,14 @@ if (path === 'main') {
 if (path === 'info') {
   root.render(
     <Provider store={store}>
-                <StyletronProvider value={engine}>
-      <BaseProvider theme={LightTheme}>
-      <Info />
-      </BaseProvider>
-      </StyletronProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <StyletronProvider value={engine}>
+          <BaseProvider theme={LightTheme}>
+            <Info />
+          </BaseProvider>
+        </StyletronProvider>
+      </PersistGate>
     </Provider>
   );
   reportWebVitals();
 }
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

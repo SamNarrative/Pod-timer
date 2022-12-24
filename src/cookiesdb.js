@@ -49,8 +49,18 @@ db.version(2).stores({
   runId,
   feelingScore,
   periodLength`,
-
 });
+
+export async function deleteDatabase() {
+  await db.periods.delete().then(() => {
+    console.log('deleted')
+  }
+  );
+  
+  
+  
+ 
+}
 
 export function getSetRunId() {
   const cookies = new Cookies();
@@ -72,7 +82,7 @@ export default function createNewPeriod(id, type, runId, periodLength) {
     updated_at: Date.now(),
     completed_at: null,
     runId: runId,
-    periodLength: periodLength, 
+    periodLength: periodLength,
   };
 
   db.periods.put(newPeriod);
@@ -168,7 +178,7 @@ export async function sessionsCompletePastSeven() {
     return {
       day: convertToCurrentDateTZ(result.inserted_at),
       feelingScore: result.feelingScore,
-      periodLength: result.periodLength, 
+      periodLength: result.periodLength,
     };
   });
 
@@ -177,44 +187,47 @@ export async function sessionsCompletePastSeven() {
     const groupedArray = Object.entries(groupBy(day[1], 'feelingScore'));
     const groupedArrayScoreSummarised = Object.fromEntries(
       groupedArray.map(feeling => {
-        return [feelingScoreToString[feeling[0]], feeling[1].reduce(    (previousValue, currentValue) => previousValue + currentValue.periodLength/60,
-        0)
-      
-      
-      
-      ];
+        return [
+          feelingScoreToString[feeling[0]],
+          feeling[1].reduce(
+            (previousValue, currentValue) =>
+              previousValue + currentValue.periodLength / 60,
+            0
+          ),
+        ];
       })
     );
     const resultObject = {
       name: day[0],
       ...groupedArrayScoreSummarised,
     };
-    
+
     return resultObject;
   });
 
-  const arrayOfDates = []; 
+  const arrayOfDates = [];
   let rollingDay = epochWeekAgo + 86400000;
   while (rollingDay <= epochDate) {
     arrayOfDates.push(convertToCurrentDateTZ(rollingDay));
     rollingDay = rollingDay + 86400000;
-}
+  }
   for (let i = 0; i < arrayOfDates.length; i++) {
-     const filteredArray = feelingScoreArray.filter(day => day.name === arrayOfDates[i] ); 
-     if (filteredArray.length === 0) {
-      feelingScoreArray.push({name: arrayOfDates[i]})
-     }
-  } 
+    const filteredArray = feelingScoreArray.filter(
+      day => day.name === arrayOfDates[i]
+    );
+    if (filteredArray.length === 0) {
+      feelingScoreArray.push({ name: arrayOfDates[i] });
+    }
+  }
 
-  const sortedFeelingScoreArray = feelingScoreArray.sort(function(a,b){
+  const sortedFeelingScoreArray = feelingScoreArray.sort(function(a, b) {
     return new Date(a.name) - new Date(b.name);
   });
 
-
   const formattedFeelingScoreArray = sortedFeelingScoreArray.map(entry => {
-    entry.name =  moment(entry.name).format("Do MMM")
-    return entry
-  })
+    entry.name = moment(entry.name).format('Do MMM');
+    return entry;
+  });
 
   return formattedFeelingScoreArray;
 }

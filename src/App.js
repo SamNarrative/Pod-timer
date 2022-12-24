@@ -41,6 +41,8 @@ function ClockWrapper() {
   const [periodId, setPeriodId] = useState(null);
   const [periodCount, setPeriodCount] = useState(1);
   const runId = getSetRunId();
+  
+  ipcRenderer.send('zoom-out');
 
   const sessionLength = useSelector(state => state.sessionLength.value);
   const breakLength = useSelector(state => state.breakLength.value);

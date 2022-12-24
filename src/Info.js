@@ -1,32 +1,27 @@
 import './styles.css';
 import React, { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Label,
-} from 'recharts';
-import { SessionControl, BreakControl } from './App.js';
-import UISwitch from './UI/switchUI.js';
-
 import moment from 'moment';
 import 'moment-timezone';
+import { useSelector, useDispatch } from 'react-redux';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+
+
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Label, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+
+import UISwitch from './UI/switchUI.js';
+import { SessionControl, BreakControl } from './App.js';
 import {
   countRunsPeriodComplete,
   sessionsCompleteTodayObject,
   productivityPercentageTodayObject,
   productivityPercentageTodayOutcome,
-  sessionsCompletePastSeven,
+  sessionsCompletePastSeven, deleteDatabase,
 } from './cookiesdb';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import { useSelector, useDispatch } from 'react-redux';
 import { toggleSkipBreak } from './skipBreakSlice';
+import { Button, KIND } from 'baseui/button';
 
+const { ipcRenderer } = window.require('electron');
 function Example() {
   const [data, setData] = useState(null);
 
@@ -186,6 +181,7 @@ function TodayProductivityPie() {
 export default function Info() {
   const [openSection, setOpenSection] = useState('graph');
 
+  ipcRenderer.send('zoom-out');
   return (
     <div className="Info">
       <div id="hiddenHeader"></div>
@@ -279,9 +275,30 @@ function PeriodLengthsSettings() {
 }
 
 function LocalStorageSettings() {
+  const [requestedDelete, setRequestedDelete] = useState(false);
+
+
+  function deleteDatabaseCall() {
+    // deleteDatabase();
+    // setRequestedDelete(false);
+  }
+
   return (
     <div>
-      <h4>Delete Local Storage</h4>
+      <h4>Database Settings</h4>
+      <div>
+        { !requestedDelete ? 
+        <Button onClick={() => setRequestedDelete(true)} kind={KIND.secondary}>
+          Delete Database
+        </Button>
+        : 
+        <div >
+        <Button onClick={() => deleteDatabaseCall()} kind={KIND.secondary}>
+        Procceed and Delete Database
+      </Button>
+      <p>Check back soon, this feature isn't available yet</p>
+      </div>}
+      </div>
     </div>
   );
 }

@@ -21,7 +21,8 @@ const path = window.location.href.substring(
   window.location.href.lastIndexOf('/') + 1
 );
 
-if (path === 'main') {
+// A weird hack for trying to load the correct window in production, probably a better way to do it, but not sure atm. 
+if (window.innerWidth < 600) {
   root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -36,7 +37,7 @@ if (path === 'main') {
   reportWebVitals();
 }
 
-if (path === 'info') {
+else  {
   root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

@@ -40,7 +40,8 @@
   "build": {
     "appId": "your.id",
     "mac": {
-      "category": "your.app.category.type"
+      "category": "your.app.category.type",
+      "icon": "public/icon.icns"
     }
   },
   "scripts": {
@@ -78,6 +79,7 @@
     "concurrently": "^7.5.0",
     "electron-builder": "^23.6.0",
     "electron-is-dev": "^2.0.0",
+    "electron-packager": "^17.1.1",
     "electron-prebuilt-compile": "8.2.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.38",

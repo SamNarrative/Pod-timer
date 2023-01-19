@@ -8,6 +8,7 @@ const {
   REACT_DEVELOPER_TOOLS,
 } = require('electron-devtools-installer');
 const url = require('url');
+const iconPath = path.join(__dirname, "build","icon.icns")
 
 const unhandled = require('electron-unhandled');
 
@@ -29,6 +30,7 @@ function createWindow() {
       webSecurity: false,
       enableRemoteModule: true,
     },
+    icon: iconPath,
   });
 
   win.setAlwaysOnTop(true, 'screen-saver');
